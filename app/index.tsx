@@ -276,7 +276,7 @@ export default function Index() {
 
   const selectOption = (points: number) => {
     // Apply 1.5x multiplier if answer selected during bonus time
-    const isInBonusTime = timeRemaining > totalTime - bonusTime;
+    const isInBonusTime = timeRemaining > totalQuestionTime - bonusTime;
     const finalPoints = isInBonusTime ? Math.round(points * 1.5) : points;
     
     setSelectedPoints((prev) => ({
