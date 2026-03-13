@@ -1,6 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
+  AppState,
+  Easing,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -9,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
+import Svg, { Circle } from "react-native-svg";
 import questionsData from "./questions.json";
 
 type Option = {
@@ -48,6 +52,15 @@ const ALL_QUESTIONS: Question[] = [
   ...rawData.hypothetical,
 ];
 
+const TRANSITION_FADE_OUT_MS = 260;
+const TRANSITION_BREATHING_GAP_MS = 220;
+const TRANSITION_REFILL_EXTRA_MS = 500;
+const TRANSITION_HOLD_MS =
+  TRANSITION_BREATHING_GAP_MS + TRANSITION_REFILL_EXTRA_MS;
+const TRANSITION_FADE_IN_MS = 320;
+const TIMER_SYNC_INTERVAL_MS = 100;
+const VIGNETTE_EDGE_COLOR = "rgba(120, 36, 36, 0.2)";
+
 // Circular Timer Component
 type CircularTimerProps = {
   timeRemaining: number; // For external state tracking if needed
@@ -55,7 +68,113 @@ type CircularTimerProps = {
   bonusTime: number; // The 'bonusTime' attribute
   isLowTime: boolean; // Derived state: totalTime - elapsed < 3 (or 30%)
   questionId: string; // Used as the 'key' to reset the timer on new questions
+  duration?: number;
+  initialRemainingTime?: number;
+  isPlaying?: boolean;
+  isGrowing?: boolean;
+  mode?: "countdown" | "refill";
+  displayTimeRemaining?: number;
+  refillStartFraction?: number;
+  refillStartValue?: number;
 };
+
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+
+type RefillTimerProps = {
+  totalTime: number;
+  duration: number;
+  startFraction: number;
+  startValue: number;
+  questionId: string;
+};
+
+function RefillTimer({
+  totalTime,
+  duration,
+  startFraction,
+  startValue,
+  questionId,
+}: RefillTimerProps) {
+  const progressRef = useRef(new Animated.Value(startFraction)).current;
+  const [displayValue, setDisplayValue] = useState(startValue);
+
+  useEffect(() => {
+    progressRef.stopAnimation();
+    progressRef.setValue(startFraction);
+    setDisplayValue(startValue);
+
+    const listenerId = progressRef.addListener(({ value }) => {
+      const normalizedProgress =
+        startFraction >= 1 ? 1 : (value - startFraction) / (1 - startFraction);
+      const clampedProgress = Math.max(0, Math.min(1, normalizedProgress));
+      setDisplayValue(startValue + (totalTime - startValue) * clampedProgress);
+    });
+
+    const animation = Animated.timing(progressRef, {
+      toValue: 1,
+      duration: duration * 1000,
+      easing: Easing.inOut(Easing.ease),
+      useNativeDriver: false,
+    });
+
+    animation.start();
+
+    return () => {
+      progressRef.removeListener(listenerId);
+      progressRef.stopAnimation();
+    };
+  }, [duration, progressRef, questionId, startFraction, startValue, totalTime]);
+
+  const size = 120;
+  const strokeWidth = 8;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = progressRef.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-circumference, 0],
+  });
+  const refillDisplayLabel =
+    displayValue >= totalTime - 0.05
+      ? totalTime.toString()
+      : Math.floor(displayValue).toString();
+
+  return (
+    <View style={styles.timerContainer}>
+      <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <Circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="#222"
+          strokeWidth={strokeWidth}
+          fill="none"
+        />
+        <AnimatedCircle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="#2fff3d"
+          strokeWidth={strokeWidth}
+          fill="none"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+          originX={size / 2}
+          originY={size / 2}
+          rotation="-90"
+        />
+      </Svg>
+      <View style={styles.timerOverlay} pointerEvents="none">
+        <View style={styles.timerTextContainer}>
+          <Text style={[styles.timerTimeText, { color: "#2fff3d" }]}>
+            {refillDisplayLabel}
+          </Text>
+          <Text style={styles.timerBonusLabel}>REFILL</Text>
+        </View>
+      </View>
+    </View>
+  );
+}
 
 function CircularTimer({
   timeRemaining,
@@ -63,6 +182,14 @@ function CircularTimer({
   bonusTime,
   isLowTime,
   questionId,
+  duration,
+  initialRemainingTime,
+  isPlaying,
+  isGrowing,
+  mode = "countdown",
+  displayTimeRemaining,
+  refillStartFraction = 0,
+  refillStartValue = 0,
 }: CircularTimerProps) {
   // Logic to determine color based on Aura states
   // Bonus zone: solid yellow until bonus time runs out
@@ -71,17 +198,42 @@ function CircularTimer({
   const START_COLOR = "#2fff3d"; // Blue (at end of bonus)
   const END_COLOR = "#FF3B30"; // Red (at time 0)
 
-  const colors = [BONUS_COLOR, BONUS_COLOR, START_COLOR, END_COLOR];
-  const colorsTime = [totalTime, totalTime - bonusTime, totalTime - bonusTime, 0];
+  const colors: [`#${string}`, `#${string}`, `#${string}`, `#${string}`] = [
+    BONUS_COLOR,
+    BONUS_COLOR,
+    START_COLOR,
+    END_COLOR,
+  ];
+  const colorsTime: [number, number, number, number] = [
+    totalTime,
+    totalTime - bonusTime,
+    totalTime - bonusTime,
+    0,
+  ];
+
+  if (mode === "refill") {
+    return (
+      <RefillTimer
+        totalTime={totalTime}
+        duration={duration ?? 0}
+        startFraction={refillStartFraction}
+        startValue={refillStartValue}
+        questionId={questionId}
+      />
+    );
+  }
 
   return (
     <View style={styles.timerContainer}>
       <CountdownCircleTimer
         key={questionId}
-        isPlaying={timeRemaining > 0}
-        duration={totalTime}
+        isPlaying={isPlaying ?? timeRemaining > 0}
+        duration={duration ?? totalTime}
+        initialRemainingTime={initialRemainingTime}
+        isGrowing={isGrowing}
         colors={colors}
         colorsTime={colorsTime}
+        updateInterval={0.1}
         size={120}
         strokeWidth={8}
         trailColor="#222"
@@ -89,16 +241,18 @@ function CircularTimer({
           return { shouldRepeat: false };
         }}
       >
-        {({ remainingTime, color }) => (
-          <View style={styles.timerTextContainer}>
-            <Text style={[styles.timerTimeText, { color }]}>
-              {remainingTime}
-            </Text>
-            {remainingTime > totalTime - bonusTime && (
-              <Text style={styles.timerBonusLabel}>BONUS</Text>
-            )}
-          </View>
-        )}
+        {({ remainingTime, color }) => {
+          return (
+            <View style={styles.timerTextContainer}>
+              <Text style={[styles.timerTimeText, { color }]}>
+                {Math.max(0, Math.ceil(displayTimeRemaining ?? timeRemaining))}
+              </Text>
+              {remainingTime > totalTime - bonusTime && (
+                <Text style={styles.timerBonusLabel}>BONUS</Text>
+              )}
+            </View>
+          );
+        }}
       </CountdownCircleTimer>
     </View>
   );
@@ -148,6 +302,23 @@ function getAuraTier(score: number) {
 
 export default function Index() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [timerMode, setTimerMode] = useState<"countdown" | "refill">("countdown");
+  const [timerRenderKey, setTimerRenderKey] = useState<string>(
+    `${ALL_QUESTIONS[0].id}-0`,
+  );
+  const [timerTotalTime, setTimerTotalTime] = useState<number>(ALL_QUESTIONS[0].time);
+  const [timerBonusTime, setTimerBonusTime] = useState<number>(ALL_QUESTIONS[0].bonusTime);
+  const [timerRefillDuration, setTimerRefillDuration] = useState<number>(
+    (TRANSITION_HOLD_MS + TRANSITION_FADE_IN_MS) / 1000,
+  );
+  const [timerRefillStartFraction, setTimerRefillStartFraction] = useState(0);
+  const [timerRefillStartValue, setTimerRefillStartValue] = useState(
+    ALL_QUESTIONS[0].time,
+  );
+  const [timerInitialRemainingTime, setTimerInitialRemainingTime] = useState<number>(
+    ALL_QUESTIONS[0].time,
+  );
   const [selectedPoints, setSelectedPoints] = useState<Record<string, number>>({});
   const [questionOptionShuffles] = useState<Record<string, Option[]>>(() => {
     // Pre-shuffle all options for each question
@@ -159,82 +330,258 @@ export default function Index() {
   });
 
   const [timeRemaining, setTimeRemaining] = useState(ALL_QUESTIONS[0].time);
-  const shakeAnimRef = useRef(new Animated.Value(0)).current;
+  const [questionStartTimeMs, setQuestionStartTimeMs] = useState(() => Date.now());
+  const autoAdvancedStepRef = useRef<number | null>(null);
+  const isAdvancingRef = useRef(false);
+  const isMountedRef = useRef(true);
+  const isAttentionActiveRef = useRef(true);
+  const attentionWaitersRef = useRef<Array<() => void>>([]);
+  const timerTransitionSeqRef = useRef(0);
+  const transitionOpacityRef = useRef(new Animated.Value(1)).current;
   const glitchColorRef = useRef(new Animated.Value(0)).current;
+  const vignetteAnimRef = useRef(new Animated.Value(0)).current;
 
-  const currentQuestion = ALL_QUESTIONS[currentStep];
-  const totalQuestionTime = currentQuestion?.time || 0;
-  const bonusTime = currentQuestion?.bonusTime || 0;
+  const wait = (ms: number) =>
+    new Promise<void>((resolve) => {
+      setTimeout(resolve, ms);
+    });
+
+  const animateTransitionOpacity = useCallback(
+    (toValue: number, duration: number) => {
+      return new Promise<void>((resolve) => {
+        Animated.timing(transitionOpacityRef, {
+          toValue,
+          duration,
+          useNativeDriver: true,
+        }).start(() => resolve());
+      });
+    },
+    [transitionOpacityRef],
+  );
+
+  const waitForAttention = useCallback(() => {
+    return new Promise<void>((resolve) => {
+      if (isAttentionActiveRef.current) {
+        resolve();
+        return;
+      }
+      attentionWaitersRef.current.push(resolve);
+    });
+  }, []);
+
+  const nextTimerKey = useCallback((baseKey: string) => {
+    const seq = timerTransitionSeqRef.current + 1;
+    timerTransitionSeqRef.current = seq;
+    return `${baseKey}-${seq}`;
+  }, []);
+
+  const startCountdownForQuestion = useCallback(
+    (question: Question, initialRemainingTime = question.time) => {
+      setTimerMode("countdown");
+      setTimerTotalTime(question.time);
+      setTimerBonusTime(question.bonusTime);
+      setTimerInitialRemainingTime(initialRemainingTime);
+      setTimerRenderKey(nextTimerKey(question.id));
+      setQuestionStartTimeMs(Date.now() - (question.time - initialRemainingTime) * 1000);
+      setTimeRemaining(initialRemainingTime);
+      autoAdvancedStepRef.current = null;
+      glitchColorRef.setValue(0);
+      vignetteAnimRef.setValue(0);
+    },
+    [glitchColorRef, nextTimerKey, vignetteAnimRef],
+  );
+
+  const advanceToStepWithTransition = useCallback(
+    async (nextStep: number) => {
+      if (nextStep > ALL_QUESTIONS.length || isAdvancingRef.current) {
+        return;
+      }
+
+      const currentQuestion = ALL_QUESTIONS[currentStep];
+      const nextQuestion = ALL_QUESTIONS[nextStep];
+      const refillDurationSec = (TRANSITION_HOLD_MS + TRANSITION_FADE_IN_MS) / 1000;
+      const currentFillFraction = currentQuestion
+        ? Math.max(0, Math.min(1, timeRemaining / currentQuestion.time))
+        : 0;
+      const currentDisplayedTime = Math.max(0, Math.ceil(timeRemaining));
+
+      isAdvancingRef.current = true;
+      setIsTransitioning(true);
+
+      // Phase 1: fade out the current question.
+      await animateTransitionOpacity(0, TRANSITION_FADE_OUT_MS);
+
+      // Hold the midpoint until the user is actively back on this tab/app.
+      if (!isAttentionActiveRef.current) {
+        await waitForAttention();
+      }
+
+      if (nextQuestion) {
+        setTimerMode("refill");
+        setTimerTotalTime(nextQuestion.time);
+        setTimerBonusTime(nextQuestion.bonusTime);
+        setTimerRenderKey(nextTimerKey(`refill-${nextQuestion.id}`));
+        setTimerRefillDuration(refillDurationSec);
+        setTimerRefillStartFraction(currentFillFraction);
+        setTimerRefillStartValue(currentDisplayedTime);
+      }
+
+      // Small breathing gap between questions.
+      await wait(TRANSITION_HOLD_MS);
+
+      if (!isMountedRef.current) {
+        return;
+      }
+
+      setCurrentStep(nextStep);
+      transitionOpacityRef.setValue(0);
+
+      // Phase 2: fade in the next question.
+      await animateTransitionOpacity(1, TRANSITION_FADE_IN_MS);
+
+      if (nextQuestion && isMountedRef.current) {
+        startCountdownForQuestion(nextQuestion);
+      }
+
+      if (isMountedRef.current) {
+        setIsTransitioning(false);
+      }
+      isAdvancingRef.current = false;
+    },
+    [
+      TRANSITION_FADE_IN_MS,
+      TRANSITION_FADE_OUT_MS,
+      TRANSITION_HOLD_MS,
+      animateTransitionOpacity,
+      currentStep,
+      nextTimerKey,
+      startCountdownForQuestion,
+      timeRemaining,
+      waitForAttention,
+      transitionOpacityRef,
+    ],
+  );
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+      attentionWaitersRef.current.forEach((resolve) => resolve());
+      attentionWaitersRef.current = [];
+    };
+  }, []);
+
+  useEffect(() => {
+    const applyAttentionState = (isActive: boolean) => {
+      isAttentionActiveRef.current = isActive;
+      if (isActive && attentionWaitersRef.current.length > 0) {
+        const pending = [...attentionWaitersRef.current];
+        attentionWaitersRef.current = [];
+        pending.forEach((resolve) => resolve());
+      }
+    };
+
+    applyAttentionState(AppState.currentState === "active");
+
+    const appStateSubscription = AppState.addEventListener("change", (nextState) => {
+      const isAppActive = nextState === "active";
+      const isDocumentVisible = typeof document === "undefined" ? true : !document.hidden;
+      applyAttentionState(isAppActive && isDocumentVisible);
+    });
+
+    let visibilityHandler: (() => void) | undefined;
+    if (typeof document !== "undefined" && typeof document.addEventListener === "function") {
+      visibilityHandler = () => {
+        const isVisible = !document.hidden;
+        const isAppActive = AppState.currentState === "active";
+        applyAttentionState(isVisible && isAppActive);
+      };
+      document.addEventListener("visibilitychange", visibilityHandler);
+    }
+
+    return () => {
+      appStateSubscription.remove();
+      if (visibilityHandler && typeof document !== "undefined") {
+        document.removeEventListener("visibilitychange", visibilityHandler);
+      }
+    };
+  }, []);
 
   // Initialize timer when question changes
   useEffect(() => {
-    setTimeRemaining(totalQuestionTime);
-    shakeAnimRef.setValue(0);
-    glitchColorRef.setValue(0);
+    const question = ALL_QUESTIONS[currentStep];
+    if (question && !isTransitioning) {
+      startCountdownForQuestion(question);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentStep, totalQuestionTime]);
+  }, [currentStep, isTransitioning]);
 
-  // Timer countdown effect
+  // Timer countdown effect based on wall-clock time so it stays accurate in background tabs.
   useEffect(() => {
-    if (timeRemaining <= 0) {
-      // Time's up - auto advance
-      if (currentStep < ALL_QUESTIONS.length - 1) {
-        setCurrentStep((prev) => prev + 1);
-      }
+    const question = ALL_QUESTIONS[currentStep];
+    if (!question) {
       return;
     }
 
-    const interval = setInterval(() => {
-      setTimeRemaining((prev) => {
-        const newTime = Math.max(0, prev - 0.1);
-        return newTime;
-      });
-    }, 100);
+    const syncTimeRemaining = (shouldResyncTimer = false) => {
+      const elapsedSeconds = (Date.now() - questionStartTimeMs) / 1000;
+      const nextRemaining = Math.max(0, question.time - elapsedSeconds);
+      setTimeRemaining(nextRemaining);
 
-    return () => clearInterval(interval);
-  }, [timeRemaining, currentStep]);
+      if (shouldResyncTimer && timerMode === "countdown") {
+        setTimerInitialRemainingTime(nextRemaining);
+        setTimerRenderKey(nextTimerKey(question.id));
+      }
+    };
 
-  // Shake effect when time is low
-  useEffect(() => {
-    const isLowTime = timeRemaining / totalQuestionTime < 0.3;
+    syncTimeRemaining();
 
-    if (isLowTime && timeRemaining > 0) {
-      const shakeSequence = Animated.sequence([
-        Animated.timing(shakeAnimRef, {
-          toValue: 5,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-        Animated.timing(shakeAnimRef, {
-          toValue: -5,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-        Animated.timing(shakeAnimRef, {
-          toValue: 3,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-        Animated.timing(shakeAnimRef, {
-          toValue: -3,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-        Animated.timing(shakeAnimRef, {
-          toValue: 0,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-      ]);
+    const interval = setInterval(syncTimeRemaining, TIMER_SYNC_INTERVAL_MS);
 
-      shakeSequence.start();
+    const appStateSubscription = AppState.addEventListener("change", (nextState) => {
+      if (nextState === "active") {
+        syncTimeRemaining(true);
+      }
+    });
+
+    let visibilityHandler: (() => void) | undefined;
+    if (typeof document !== "undefined" && typeof document.addEventListener === "function") {
+      visibilityHandler = () => {
+        if (!document.hidden) {
+          syncTimeRemaining(true);
+        }
+      };
+      document.addEventListener("visibilitychange", visibilityHandler);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeRemaining, totalQuestionTime]);
+
+    return () => {
+      clearInterval(interval);
+      appStateSubscription.remove();
+      if (visibilityHandler && typeof document !== "undefined") {
+        document.removeEventListener("visibilitychange", visibilityHandler);
+      }
+    };
+  }, [currentStep, nextTimerKey, questionStartTimeMs, timerMode]);
+
+  // Auto-advance exactly once when time reaches zero.
+  useEffect(() => {
+    if (timeRemaining > 0) {
+      return;
+    }
+
+    if (autoAdvancedStepRef.current === currentStep) {
+      return;
+    }
+
+    autoAdvancedStepRef.current = currentStep;
+    void advanceToStepWithTransition(currentStep + 1);
+  }, [advanceToStepWithTransition, currentStep, timeRemaining]);
 
   // Glitch effect for color
   useEffect(() => {
-    const isLowTime = timeRemaining / totalQuestionTime < 0.3;
+    const question = ALL_QUESTIONS[currentStep];
+    if (!question) return;
+    
+    const isLowTime = timeRemaining / question.time < 0.3;
 
     if (isLowTime && timeRemaining > 0) {
       Animated.loop(
@@ -253,18 +600,37 @@ export default function Index() {
       ).start();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeRemaining, totalQuestionTime]);
+  }, [timeRemaining, currentStep]);
+
+  // Vignette effect that closes in from edges when time is low
+  useEffect(() => {
+    const question = ALL_QUESTIONS[currentStep];
+    if (!question) return;
+    
+    const isLowTime = timeRemaining / question.time < 0.3;
+
+    if (isLowTime && timeRemaining > 0) {
+      Animated.timing(vignetteAnimRef, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      Animated.timing(vignetteAnimRef, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: false,
+      }).start();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeRemaining, currentStep]);
 
   const answeredCount = Object.keys(selectedPoints).length;
   const progress = (currentStep + 1) / ALL_QUESTIONS.length;
   const progressPercent = Math.round(progress * 100);
   const isFinished = answeredCount === ALL_QUESTIONS.length || currentStep >= ALL_QUESTIONS.length;
 
-  // Determine current section
-  const currentSection =
-    currentQuestion.id.startsWith("M") ? "Measurable" : "Hypothetical";
-  const measurableCount = rawData.measurable.length;
-
+  // Calculate final score and tier (must be done before early return to maintain hook order)
   const finalScore = useMemo(() => {
     return Object.values(selectedPoints).reduce(
       (total, points) => total + points,
@@ -274,42 +640,7 @@ export default function Index() {
 
   const auraTier = getAuraTier(finalScore);
 
-  const selectOption = (points: number) => {
-    // Apply 1.5x multiplier if answer selected during bonus time
-    const isInBonusTime = timeRemaining > totalQuestionTime - bonusTime;
-    const finalPoints = isInBonusTime ? Math.round(points * 1.5) : points;
-    
-    setSelectedPoints((prev) => ({
-      ...prev,
-      [currentQuestion.id]: finalPoints,
-    }));
-    // Auto-advance to next question
-    if (currentStep < ALL_QUESTIONS.length - 1) {
-      setCurrentStep((prev) => prev + 1);
-    }
-  };
-
-  const goBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep((prev) => prev - 1);
-    }
-  };
-
-  const restart = () => {
-    setSelectedPoints({});
-    setCurrentStep(0);
-  };
-
-  const isLowTime = timeRemaining / totalQuestionTime < 0.3;
-  const shakeTransform = {
-    transform: [{ translateX: shakeAnimRef }],
-  };
-
-  const glitchOpacity = glitchColorRef.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 0.5],
-  });
-
+  // Show results page if finished
   if (isFinished) {
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -321,7 +652,10 @@ export default function Index() {
             <Text style={styles.message}>{auraTier.message}</Text>
           </View>
 
-          <Pressable style={styles.primaryButton} onPress={restart}>
+          <Pressable style={styles.primaryButton} onPress={() => {
+            setSelectedPoints({});
+            setCurrentStep(0);
+          }}>
             <Text style={styles.primaryButtonText}>Try Again</Text>
           </Pressable>
         </View>
@@ -329,80 +663,168 @@ export default function Index() {
     );
   }
 
+  // Only access currentQuestion properties after we've confirmed not finished
+  const currentQuestion = ALL_QUESTIONS[currentStep];
+  const totalQuestionTime = currentQuestion.time;
+  const bonusTime = currentQuestion.bonusTime;
+
+  // Determine current section
+  const currentSection =
+    currentQuestion.id.startsWith("M") ? "Measurable" : "Hypothetical";
+  const measurableCount = rawData.measurable.length;
+
+  const selectOption = (points: number) => {
+    if (isTransitioning) {
+      return;
+    }
+
+    // Apply 1.5x multiplier if answer selected during bonus time
+    const isInBonusTime = timeRemaining > totalQuestionTime - bonusTime;
+    const finalPoints = isInBonusTime ? Math.round(points * 1.5) : points;
+    
+    setSelectedPoints((prev) => ({
+      ...prev,
+      [currentQuestion.id]: finalPoints,
+    }));
+    // Auto-advance to next question
+    if (currentStep < ALL_QUESTIONS.length - 1) {
+      void advanceToStepWithTransition(currentStep + 1);
+    }
+  };
+
+  const isLowTime = timeRemaining / totalQuestionTime < 0.3;
+
+  const glitchOpacity = glitchColorRef.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0.5],
+  });
+
+  const vignetteOpacity = vignetteAnimRef.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.7],
+  });
+
   const displayedOptions = questionOptionShuffles[currentQuestion.id];
 
+  const effectiveTimerTotalTime = timerMode === "refill" ? timerTotalTime : totalQuestionTime;
+  const effectiveTimerBonusTime = timerMode === "refill" ? timerBonusTime : bonusTime;
+
   return (
-    <Animated.View style={[{ flex: 1 }, isLowTime && shakeTransform]}>
+    <View style={{ flex: 1 }}>
       <SafeAreaView style={styles.safeArea}>
+        <Animated.View
+          style={[
+            styles.vignetteContainer,
+            { opacity: vignetteOpacity },
+          ]}
+          pointerEvents="none"
+        >
+          <LinearGradient
+            colors={[VIGNETTE_EDGE_COLOR, 'transparent']}
+            style={styles.vignetteTop}
+            pointerEvents="none"
+          />
+          <LinearGradient
+            colors={['transparent', VIGNETTE_EDGE_COLOR]}
+            style={styles.vignetteBottom}
+            pointerEvents="none"
+          />
+          <LinearGradient
+            colors={[VIGNETTE_EDGE_COLOR, 'transparent']}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={styles.vignetteSide}
+            pointerEvents="none"
+          />
+          <LinearGradient
+            colors={['transparent', VIGNETTE_EDGE_COLOR]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={styles.vignetteSide}
+            pointerEvents="none"
+          />
+        </Animated.View>
+
         <View style={styles.headerContainer}>
           <Text style={styles.header}>AURA Calculator</Text>
           <CircularTimer
             timeRemaining={timeRemaining}
-            totalTime={totalQuestionTime}
-            bonusTime={bonusTime}
+            totalTime={effectiveTimerTotalTime}
+            bonusTime={effectiveTimerBonusTime}
             isLowTime={isLowTime}
-            questionId={currentQuestion.id}
+            questionId={timerRenderKey}
+            mode={timerMode}
+            duration={timerMode === "refill" ? timerRefillDuration : totalQuestionTime}
+            initialRemainingTime={timerInitialRemainingTime}
+            isPlaying={timerMode === "refill" ? true : timeRemaining > 0}
+            isGrowing={timerMode === "refill" ? true : undefined}
+            displayTimeRemaining={timeRemaining}
+            refillStartFraction={timerRefillStartFraction}
+            refillStartValue={timerRefillStartValue}
           />
         </View>
 
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.sectionBanner}>
-            <Text style={styles.sectionText}>
-              Section {currentStep >= measurableCount ? "2" : "1"}: {currentSection}
-            </Text>
-            <Text style={styles.sectionDescription}>
+        <Animated.View style={[styles.questionScene, { opacity: transitionOpacityRef }]}> 
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.sectionBanner}>
+              <Text style={styles.sectionText}>
+                Section {currentStep >= measurableCount ? "2" : "1"}: {currentSection}
+              </Text>
+              <Text style={styles.sectionDescription}>
+                {currentSection === "Measurable"
+                  ? "Part 1: Current Stats and Habits"
+                  : "Part 2: Decision-Making"}
+              </Text>
+            </View>
+            <Text style={styles.subHeader}>
               {currentSection === "Measurable"
                 ? "Part 1: Current Stats and Habits"
                 : "Part 2: Decision-Making"}
             </Text>
-          </View>
-          <Text style={styles.subHeader}>
-            {currentSection === "Measurable"
-              ? "Part 1: Current Stats and Habits"
-              : "Part 2: Decision-Making"}
-          </Text>
 
-          <View style={styles.progressTrack}>
-            <View style={[styles.progressFill, { width: `${progressPercent}%` }]} />
-          </View>
-
-          <Text style={styles.stepText}>
-            Question {currentStep + 1} of {ALL_QUESTIONS.length} · {progressPercent}% complete
-          </Text>
-
-          <View style={styles.card}>
-            <View style={styles.questionHeader}>
-              <Text style={styles.questionTitle}>
-                {currentQuestion.emoji} {currentQuestion.title}
-              </Text>
+            <View style={styles.progressTrack}>
+              <View style={[styles.progressFill, { width: `${progressPercent}%` }]} />
             </View>
-            <Text style={styles.questionSubtitle}>{currentQuestion.subtitle}</Text>
 
-            {displayedOptions.map((option) => {
-              const isSelected = selectedPoints[currentQuestion.id] === option.points;
+            <Text style={styles.stepText}>
+              Question {currentStep + 1} of {ALL_QUESTIONS.length} · {progressPercent}% complete
+            </Text>
 
-              return (
-                <Pressable
-                  key={option.label}
-                  onPress={() => selectOption(option.points)}
-                  style={[styles.option, isSelected && styles.optionSelected]}
-                >
-                  <Animated.Text
-                    style={[
-                      styles.optionText,
-                      isSelected && styles.optionTextSelected,
-                      isLowTime && { opacity: glitchOpacity },
-                    ]}
+            <View style={styles.card}>
+              <View style={styles.questionHeader}>
+                <Text style={styles.questionTitle}>
+                  {currentQuestion.emoji} {currentQuestion.title}
+                </Text>
+              </View>
+              <Text style={styles.questionSubtitle}>{currentQuestion.subtitle}</Text>
+
+              {displayedOptions.map((option) => {
+                const isSelected = selectedPoints[currentQuestion.id] === option.points;
+
+                return (
+                  <Pressable
+                    key={option.label}
+                    onPress={() => selectOption(option.points)}
+                    disabled={isTransitioning}
+                    style={[styles.option, isSelected && styles.optionSelected]}
                   >
-                    {option.emoji} {option.label}
-                  </Animated.Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </ScrollView>
+                    <Animated.Text
+                      style={[
+                        styles.optionText,
+                        isSelected && styles.optionTextSelected,
+                        isLowTime && { opacity: glitchOpacity },
+                      ]}
+                    >
+                      {option.emoji} {option.label}
+                    </Animated.Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </ScrollView>
+        </Animated.View>
       </SafeAreaView>
-    </Animated.View>
+    </View>
   );
 }
 
@@ -411,6 +833,38 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0F172A",
     width: "100%",
+  },
+  questionScene: {
+    flex: 1,
+  },
+  vignetteContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 999,
+  },
+  vignetteTop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '30%',
+  },
+  vignetteBottom: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: '30%',
+  },
+  vignetteSide: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   headerContainer: {
     flexDirection: "row",
@@ -467,11 +921,23 @@ const styles = StyleSheet.create({
   timerTextContainer: {
     alignItems: "center",
     justifyContent: "center",
+    minWidth: 72,
+  },
+  timerOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
   },
   timerTimeText: {
     fontSize: 32,
     fontWeight: "900",
     fontFamily: "System",
+    fontVariant: ["tabular-nums"],
+    textAlign: "center",
   },
   timerBonusLabel: {
     fontSize: 10,
