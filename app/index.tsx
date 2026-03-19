@@ -1,9 +1,13 @@
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  Alert,
   Animated,
   AppState,
   Easing,
+  Linking,
+  Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -301,6 +305,7 @@ function getAuraTier(score: number) {
 }
 
 export default function Index() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [timerMode, setTimerMode] = useState<"countdown" | "refill">("countdown");
@@ -626,7 +631,10 @@ export default function Index() {
   }, [timeRemaining, currentStep]);
 
   const answeredCount = Object.keys(selectedPoints).length;
-  const progress = (currentStep + 1) / ALL_QUESTIONS.length;
+  const progress = Math.max(
+    0,
+    Math.min(1, currentStep / ALL_QUESTIONS.length),
+  );
   const progressPercent = Math.round(progress * 100);
   const isFinished = answeredCount === ALL_QUESTIONS.length || currentStep >= ALL_QUESTIONS.length;
 
@@ -639,6 +647,44 @@ export default function Index() {
   }, [selectedPoints]);
 
   const auraTier = getAuraTier(finalScore);
+
+  const isMobileWeb =
+    Platform.OS === "web" &&
+    typeof navigator !== "undefined" &&
+    /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
+  const handleShareToInstagramStory = useCallback(async () => {
+    // Desktop and laptop web should route to an explicit unsupported page.
+    if (Platform.OS === "web" && !isMobileWeb) {
+      router.push("/not-supported");
+      return;
+    }
+
+    const instagramStoryUrl = "instagram://story-camera";
+
+    try {
+      if (Platform.OS === "web") {
+        await Linking.openURL(instagramStoryUrl);
+        return;
+      }
+
+      const canOpenInstagram = await Linking.canOpenURL(instagramStoryUrl);
+      if (!canOpenInstagram) {
+        Alert.alert(
+          "Instagram not available",
+          "Instagram app is not installed or does not support story sharing on this device.",
+        );
+        return;
+      }
+
+      await Linking.openURL(instagramStoryUrl);
+    } catch {
+      Alert.alert(
+        "Unable to open Instagram",
+        "We could not open Instagram Story from this device.",
+      );
+    }
+  }, [isMobileWeb, router]);
 
   // Show results page if finished
   if (isFinished) {
@@ -657,6 +703,15 @@ export default function Index() {
             setCurrentStep(0);
           }}>
             <Text style={styles.primaryButtonText}>Try Again</Text>
+          </Pressable>
+
+          <Pressable
+            style={[styles.primaryButton, styles.secondaryButton]}
+            onPress={() => {
+              void handleShareToInstagramStory();
+            }}
+          >
+            <Text style={styles.secondaryButtonText}>Share: Post to Instagram Story</Text>
           </Pressable>
         </View>
       </SafeAreaView>
@@ -1079,8 +1134,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     alignItems: "center",
   },
+  secondaryButton: {
+    marginTop: 12,
+    backgroundColor: "#1F2937",
+    borderWidth: 1,
+    borderColor: "#475569",
+  },
   primaryButtonText: {
     color: "#0F172A",
+    fontWeight: "700",
+    fontSize: 16,
+  },
+  secondaryButtonText: {
+    color: "#E2E8F0",
     fontWeight: "700",
     fontSize: 16,
   },
