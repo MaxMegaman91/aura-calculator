@@ -686,6 +686,15 @@ export default function Index() {
     }
   }, [isMobileWeb, router]);
 
+  const handleRetry = useCallback(() => {
+    autoAdvancedStepRef.current = null;
+    isAdvancingRef.current = false;
+    setIsTransitioning(false);
+    setSelectedPoints({});
+    setCurrentStep(0);
+    startCountdownForQuestion(ALL_QUESTIONS[0]);
+  }, [startCountdownForQuestion]);
+
   // Show results page if finished
   if (isFinished) {
     return (
@@ -698,10 +707,7 @@ export default function Index() {
             <Text style={styles.message}>{auraTier.message}</Text>
           </View>
 
-          <Pressable style={styles.primaryButton} onPress={() => {
-            setSelectedPoints({});
-            setCurrentStep(0);
-          }}>
+          <Pressable style={styles.primaryButton} onPress={handleRetry}>
             <Text style={styles.primaryButtonText}>Try Again</Text>
           </Pressable>
 
