@@ -3,5 +3,11 @@
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
+  },
+  "chat.tools.terminal.autoApprove": {
+    "/^npm\\.cmd run lint$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
   }
 }

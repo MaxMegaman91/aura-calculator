@@ -15,6 +15,7 @@
     "emoji": "🎬",
     "title": "The Dopamine Loop",
     "subtitle": "How many hours of 'brain rot' / short-form video did you consume yesterday?",
+    "ordered": true,
     "options": [
       { "emoji": "🧠", "label": "Zero. I'm locked in.", "points": 70 },
       { "emoji": "⚖️", "label": "Under an hour (Healthy balance)", "points": 20 },
@@ -70,6 +71,7 @@
     "emoji": "✅",
     "title": "The 'To-Do' Debt",
     "subtitle": "How many tasks are you currently procrastinating on?",
+    "ordered": true,
     "options": [
       { "emoji": "🧹", "label": "None. My plate is clean.", "points": 80 },
       { "emoji": "📝", "label": "Maybe one or two small things", "points": 10 },

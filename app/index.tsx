@@ -2,12 +2,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  Alert,
   Animated,
   AppState,
   Easing,
-  Linking,
-  Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -18,6 +15,7 @@ import {
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import Svg, { Circle } from "react-native-svg";
 import questionsData from "./questions.json";
+import { setSharePayload } from "./share-session";
 
 type Option = {
   label: string;
@@ -32,6 +30,7 @@ type Question = {
   emoji?: string;
   time: number;
   bonusTime: number;
+  ordered: boolean;
   options: Option[];
 };
 
@@ -326,10 +325,9 @@ export default function Index() {
   );
   const [selectedPoints, setSelectedPoints] = useState<Record<string, number>>({});
   const [questionOptionShuffles] = useState<Record<string, Option[]>>(() => {
-    // Pre-shuffle all options for each question
     const shuffles: Record<string, Option[]> = {};
     ALL_QUESTIONS.forEach((q) => {
-      shuffles[q.id] = shuffleArray(q.options);
+      shuffles[q.id] = q.ordered ? [...q.options] : shuffleArray(q.options);
     });
     return shuffles;
   });
@@ -340,7 +338,7 @@ export default function Index() {
   const isAdvancingRef = useRef(false);
   const isMountedRef = useRef(true);
   const isAttentionActiveRef = useRef(true);
-  const attentionWaitersRef = useRef<Array<() => void>>([]);
+  const attentionWaitersRef = useRef<(() => void)[]>([]);
   const timerTransitionSeqRef = useRef(0);
   const transitionOpacityRef = useRef(new Animated.Value(1)).current;
   const glitchColorRef = useRef(new Animated.Value(0)).current;
@@ -454,9 +452,6 @@ export default function Index() {
       isAdvancingRef.current = false;
     },
     [
-      TRANSITION_FADE_IN_MS,
-      TRANSITION_FADE_OUT_MS,
-      TRANSITION_HOLD_MS,
       animateTransitionOpacity,
       currentStep,
       nextTimerKey,
@@ -648,43 +643,14 @@ export default function Index() {
 
   const auraTier = getAuraTier(finalScore);
 
-  const isMobileWeb =
-    Platform.OS === "web" &&
-    typeof navigator !== "undefined" &&
-    /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-
-  const handleShareToInstagramStory = useCallback(async () => {
-    // Desktop and laptop web should route to an explicit unsupported page.
-    if (Platform.OS === "web" && !isMobileWeb) {
-      router.push("/not-supported");
-      return;
-    }
-
-    const instagramStoryUrl = "instagram://story-camera";
-
-    try {
-      if (Platform.OS === "web") {
-        await Linking.openURL(instagramStoryUrl);
-        return;
-      }
-
-      const canOpenInstagram = await Linking.canOpenURL(instagramStoryUrl);
-      if (!canOpenInstagram) {
-        Alert.alert(
-          "Instagram not available",
-          "Instagram app is not installed or does not support story sharing on this device.",
-        );
-        return;
-      }
-
-      await Linking.openURL(instagramStoryUrl);
-    } catch {
-      Alert.alert(
-        "Unable to open Instagram",
-        "We could not open Instagram Story from this device.",
-      );
-    }
-  }, [isMobileWeb, router]);
+  const handleOpenSharePage = useCallback(() => {
+    setSharePayload({
+      score: finalScore,
+      tierTitle: auraTier.title,
+      tierMessage: auraTier.message,
+    });
+    router.push("/share");
+  }, [auraTier.message, auraTier.title, finalScore, router]);
 
   const handleRetry = useCallback(() => {
     autoAdvancedStepRef.current = null;
@@ -692,8 +658,9 @@ export default function Index() {
     setIsTransitioning(false);
     setSelectedPoints({});
     setCurrentStep(0);
+    transitionOpacityRef.setValue(1);
     startCountdownForQuestion(ALL_QUESTIONS[0]);
-  }, [startCountdownForQuestion]);
+  }, [startCountdownForQuestion, transitionOpacityRef]);
 
   // Show results page if finished
   if (isFinished) {
@@ -713,11 +680,9 @@ export default function Index() {
 
           <Pressable
             style={[styles.primaryButton, styles.secondaryButton]}
-            onPress={() => {
-              void handleShareToInstagramStory();
-            }}
+            onPress={handleOpenSharePage}
           >
-            <Text style={styles.secondaryButtonText}>Share: Post to Instagram Story</Text>
+            <Text style={styles.secondaryButtonText}>Share</Text>
           </Pressable>
         </View>
       </SafeAreaView>
