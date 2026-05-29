@@ -1,4 +1,4 @@
-import { File, Paths } from "expo-file-system";
+import * as FileSystem from "expo-file-system";
 import { useRouter } from "expo-router";
 import * as Sharing from "expo-sharing";
 import { useCallback, useMemo, useState } from "react";
@@ -217,12 +217,6 @@ export default function ShareScreen() {
 
     try {
       if (Platform.OS === "web") {
-    layoutDensity,
-    showAura,
-    aspectRatio,
-          throw new Error("Document not available");
-        }
-
         const safeName = escapeHtml(shareDisplayName.trim());
         const safeDetails = escapeHtml(shareDetails.trim());
         const safeTierTitle = escapeHtml(tierTitle);
@@ -343,15 +337,15 @@ export default function ShareScreen() {
       });
 
       const slug = tierTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-      const shareFile = new File(Paths.cache, `aura-${slug || "result"}.svg`);
-      shareFile.write(svg, { encoding: "utf8" });
+      const shareFilePath = `${FileSystem.cacheDirectory}aura-${slug || "result"}.svg`;
+      await FileSystem.writeAsStringAsync(shareFilePath, svg, { encoding: FileSystem.EncodingType.UTF8 });
 
       const canShare = await Sharing.isAvailableAsync();
       if (!canShare) {
         throw new Error("Sharing is not available on this device");
       }
 
-      await Sharing.shareAsync(shareFile.uri, {
+      await Sharing.shareAsync(shareFilePath, {
         dialogTitle: "Share Aura Result",
         mimeType: "image/svg+xml",
         UTI: "public.svg-image",
@@ -374,7 +368,10 @@ export default function ShareScreen() {
     tierMessage,
     tierTitle,
     layoutDensity,
+    aspectRatio,
+    showAura,
   ]);
+    
 
   return (
     <SafeAreaView style={styles.safeArea}>
