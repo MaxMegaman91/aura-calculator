@@ -1,7 +1,7 @@
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import { useRouter } from "expo-router";
 import * as Sharing from "expo-sharing";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Platform,
@@ -13,6 +13,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import ViewShot, { captureRef } from "react-native-view-shot";
 import { getSharePayload } from "./share-session";
 
 type ShareCardTheme = {
@@ -26,9 +27,9 @@ type ShareCardTheme = {
 
 const SHARE_CARD_THEMES: ShareCardTheme[] = [
   {
-    id: "dynamic",
-    label: "Dynamic",
-    background: "linear-gradient(140deg, #071422 0%, #071a24 50%, #0b2530 100%)",
+    id: "deep-midnight",
+    label: "Midnight",
+    background: "linear-gradient(140deg, #0b1320 0%, #111827 52%, #1e293b 100%)",
     accent: "#22d3ee",
     text: "#f8fafc",
     muted: "#cbd5e1",
@@ -46,16 +47,8 @@ const SHARE_CARD_THEMES: ShareCardTheme[] = [
     label: "Pastel",
     background: "linear-gradient(140deg, #fdf2f8 0%, #eef2ff 50%, #ecfccb 100%)",
     accent: "#a78bfa",
-    text: "#0f172a",
+    text: "#6f7990",
     muted: "#64748b",
-  },
-  {
-    id: "deep-midnight",
-    label: "Midnight",
-    background: "linear-gradient(140deg, #0b1320 0%, #111827 52%, #1e293b 100%)",
-    accent: "#22d3ee",
-    text: "#f8fafc",
-    muted: "#cbd5e1",
   },
   {
     id: "ember",
@@ -76,6 +69,19 @@ const SHARE_CARD_THEMES: ShareCardTheme[] = [
 ];
 
 const SHARE_CARD_FONTS = ["Georgia", "Trebuchet MS", "Courier New", "Impact"];
+const CALM_UNLOCK_SCORE = 100;
+const FOCUS_UNLOCK_SCORE = 200;
+const LOCKED_IN_UNLOCK_SCORE = 500;
+const AURA_SCORE_MAX = 2500;
+
+function isBadgeUnlocked(score: number, threshold: number) {
+  return score >= threshold;
+}
+
+function getTopBadgeLabel(score: number) {
+  const safePercent = Math.max(0, Math.min(100, Math.round((score / AURA_SCORE_MAX) * 100)));
+  return `TOP ${safePercent}%`;
+}
 
 const nextFrame = () =>
   new Promise<void>((resolve) => {
@@ -104,6 +110,10 @@ function hexToRgba(hex: string, alpha = 1) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+function ensureFileUri(path: string) {
+  return path.startsWith("file://") ? path : `file://${path.replace(/^file:\/\//, "")}`;
+}
+
 function buildShareCardSvg({
   finalScore,
   tierTitle,
@@ -125,7 +135,7 @@ function buildShareCardSvg({
   selectedShareTheme: ShareCardTheme;
   layoutDensity?: "detailed" | "minimal";
   showAura?: boolean;
-  aspectRatio?: '9:16' | '1:1' | 'transparent';
+  aspectRatio?: '9:16' | '1:1';
 }) {
   const safeName = escapeHtml(shareDisplayName.trim());
   const safeDetails = escapeHtml(shareDetails.trim());
@@ -135,8 +145,11 @@ function buildShareCardSvg({
   const progressPercent = Math.max(0, Math.min(100, finalScore)) / 100;
   const progressBarX = 174 + Math.round(progressPercent * 600);
   const dateStamp = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric' }).toUpperCase();
-  const svgWidth = aspectRatio === '1:1' || aspectRatio === 'transparent' ? 1080 : 1080;
-  const svgHeight = aspectRatio === '1:1' || aspectRatio === 'transparent' ? 1080 : 1920;
+  const svgWidth = 1080;
+  const svgHeight = aspectRatio === '1:1' ? 1080 : 1920;
+  const showCalmBadge = isBadgeUnlocked(finalScore, CALM_UNLOCK_SCORE);
+  const showFocusBadge = isBadgeUnlocked(finalScore, FOCUS_UNLOCK_SCORE);
+  const showLockedInBadge = isBadgeUnlocked(finalScore, LOCKED_IN_UNLOCK_SCORE);
 
   return `
     <svg width="1080" height="1920" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Aura result share card">
@@ -156,8 +169,8 @@ function buildShareCardSvg({
           <stop offset="100%" stop-color="transparent" stop-opacity="0" />
         </radialGradient>
       </defs>
-      ${aspectRatio === 'transparent' ? '' : `<rect width="1080" height="1920" fill="url(#background-gradient)" />`}
-      ${showAura && aspectRatio !== 'transparent' ? `<rect x="0" y="0" width="1080" height="1920" fill="url(#aura-glow)" />` : ``}
+      <rect width="${svgWidth}" height="${svgHeight}" fill="url(#background-gradient)" />
+      ${showAura ? `<rect x="0" y="0" width="${svgWidth}" height="${svgHeight}" fill="url(#aura-glow)" />` : ``}
       <rect x="96" y="96" width="888" height="1728" rx="56" fill="#0f172a" stroke="${selectedShareTheme.accent}" stroke-width="2" />
       <text x="174" y="254" fill="${selectedShareTheme.accent}" font-family="${safeFont}" font-size="34" letter-spacing="8">AURA RESULT</text>
       <text x="834" y="220" fill="${selectedShareTheme.muted}" font-family="${safeFont}" font-size="18" opacity="0.8">${dateStamp}</text>
@@ -167,17 +180,23 @@ function buildShareCardSvg({
         <text x="174" y="596" fill="${selectedShareTheme.muted}" fill-opacity="0.7" font-family="${safeFont}" font-size="36">${safeTierMessage}</text>
         <g>
           <rect x="174" y="620" rx="22" ry="22" width="160" height="48" fill="${selectedShareTheme.accent}" />
-          <text x="254" y="652" fill="#021018" font-family="${safeFont}" font-size="20" font-weight="700" text-anchor="middle">TOP 8%</text>
+          <text x="254" y="652" fill="#021018" font-family="${safeFont}" font-size="20" font-weight="700" text-anchor="middle">${getTopBadgeLabel(finalScore)}</text>
         </g>
         <g>
-          <rect x="174" y="700" rx="20" ry="20" width="156" height="44" fill="#0B1221" stroke="${selectedShareTheme.accent}" />
-          <text x="252" y="730" fill="${selectedShareTheme.accent}" font-family="${safeFont}" font-size="18" font-weight="700" text-anchor="middle">⚡ Focus</text>
+          ${showFocusBadge ? `
+            <rect x="174" y="700" rx="20" ry="20" width="156" height="44" fill="#0B1221" stroke="${selectedShareTheme.accent}" />
+            <text x="252" y="730" fill="${selectedShareTheme.accent}" font-family="${safeFont}" font-size="18" font-weight="700" text-anchor="middle">⚡ Focus</text>
+          ` : ""}
 
-          <rect x="354" y="700" rx="20" ry="20" width="156" height="44" fill="#0B1221" stroke="${selectedShareTheme.accent}" />
-          <text x="432" y="730" fill="${selectedShareTheme.accent}" font-family="${safeFont}" font-size="18" font-weight="700" text-anchor="middle">🌿 Calm</text>
+          ${showCalmBadge ? `
+            <rect x="354" y="700" rx="20" ry="20" width="156" height="44" fill="#0B1221" stroke="${selectedShareTheme.accent}" />
+            <text x="432" y="730" fill="${selectedShareTheme.accent}" font-family="${safeFont}" font-size="18" font-weight="700" text-anchor="middle">🌿 Calm</text>
+          ` : ""}
 
-          <rect x="534" y="700" rx="20" ry="20" width="156" height="44" fill="#0B1221" stroke="${selectedShareTheme.accent}" />
-          <text x="612" y="730" fill="${selectedShareTheme.accent}" font-family="${safeFont}" font-size="18" font-weight="700" text-anchor="middle">✨ Locked In</text>
+          ${showLockedInBadge ? `
+            <rect x="534" y="700" rx="20" ry="20" width="156" height="44" fill="#0B1221" stroke="${selectedShareTheme.accent}" />
+            <text x="612" y="730" fill="${selectedShareTheme.accent}" font-family="${safeFont}" font-size="18" font-weight="700" text-anchor="middle">✨ Locked In</text>
+          ` : ""}
         </g>
         <g>
           <line x1="174" x2="834" y="780" stroke="${selectedShareTheme.muted}" stroke-width="6" stroke-linecap="round" opacity="0.35" />
@@ -193,6 +212,7 @@ function buildShareCardSvg({
 
 export default function ShareScreen() {
   const router = useRouter();
+  const previewShotRef = useRef<ViewShot | null>(null);
   const payload = getSharePayload();
   const finalScore = payload?.score ?? 0;
   const tierTitle = payload?.tierTitle ?? "Aura Tier";
@@ -204,13 +224,16 @@ export default function ShareScreen() {
   const [shareFontFamily, setShareFontFamily] = useState(SHARE_CARD_FONTS[0]);
   const [layoutDensity, setLayoutDensity] = useState<"detailed" | "minimal">("detailed");
   const [showAura, setShowAura] = useState(true);
-  const [aspectRatio, setAspectRatio] = useState<'9:16' | '1:1' | 'transparent'>('9:16');
+  const [aspectRatio, setAspectRatio] = useState<'9:16' | '1:1'>('9:16');
   const [isPreparingShareImage, setIsPreparingShareImage] = useState(false);
 
   const selectedShareTheme = useMemo(() => {
     return SHARE_CARD_THEMES.find((theme) => theme.id === shareThemeId) ?? SHARE_CARD_THEMES[0];
   }, [shareThemeId]);
   const previewProgress = Math.max(0, Math.min(100, finalScore)) / 100;
+  const showCalmBadge = isBadgeUnlocked(finalScore, CALM_UNLOCK_SCORE);
+  const showFocusBadge = isBadgeUnlocked(finalScore, FOCUS_UNLOCK_SCORE);
+  const showLockedInBadge = isBadgeUnlocked(finalScore, LOCKED_IN_UNLOCK_SCORE);
 
   const handleShareImage = useCallback(async () => {
     setIsPreparingShareImage(true);
@@ -222,8 +245,8 @@ export default function ShareScreen() {
         const safeTierTitle = escapeHtml(tierTitle);
         const safeTierMessage = escapeHtml(tierMessage);
 
-        const exportWidth = aspectRatio === '1:1' || aspectRatio === 'transparent' ? 1080 : 1080;
-        const exportHeight = aspectRatio === '1:1' || aspectRatio === 'transparent' ? 1080 : 1920;
+        const exportWidth = 1080;
+        const exportHeight = aspectRatio === '1:1' ? 1080 : 1920;
 
         const wrapper = document.createElement("div");
         wrapper.style.position = "fixed";
@@ -277,7 +300,7 @@ export default function ShareScreen() {
                     <div style="position:absolute; left: ${Math.round((Math.max(0, Math.min(100, finalScore)) / 100) * 100)}%; top: -7px; transform: translateX(-50%); width:18px; height:18px; border-radius:9px; background: ${selectedShareTheme.accent}; border:2px solid #fff;"></div>
                   </div>
                 </div>
-                <div style="margin-top: 14px; display: inline-block; background: ${selectedShareTheme.accent}; color: #021018; padding: 8px 18px; border-radius: 24px; font-weight: 700; font-size: 18px;">TOP 8%</div>
+                <div style="margin-top: 14px; display: inline-block; background: ${selectedShareTheme.accent}; color: #021018; padding: 8px 18px; border-radius: 24px; font-weight: 700; font-size: 18px;">${getTopBadgeLabel(finalScore)}</div>
               ` : ''}
             </div>
             <div>
@@ -323,22 +346,36 @@ export default function ShareScreen() {
         return;
       }
 
-      const svg = buildShareCardSvg({
-        finalScore,
-        tierTitle,
-        tierMessage,
-        shareDisplayName,
-        shareDetails,
-        shareFontFamily,
-        selectedShareTheme,
-        layoutDensity,
-        showAura,
-        aspectRatio,
-      });
+      if (!previewShotRef.current) {
+        throw new Error("Preview is not ready");
+      }
 
       const slug = tierTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-      const shareFilePath = `${FileSystem.cacheDirectory}aura-${slug || "result"}.svg`;
-      await FileSystem.writeAsStringAsync(shareFilePath, svg, { encoding: FileSystem.EncodingType.UTF8 });
+      const shareDirectory = FileSystem.cacheDirectory ?? FileSystem.documentDirectory ?? "";
+      const shareFilePath = ensureFileUri(`${shareDirectory}aura-${slug || "result"}.png`);
+
+      const previewCapturePath = await captureRef(previewShotRef, {
+        format: "png",
+        quality: 1,
+        result: "tmpfile",
+      });
+
+      if (!previewCapturePath) {
+        throw new Error("No preview image generated");
+      }
+
+      const sourceUri = ensureFileUri(previewCapturePath);
+
+      try {
+        const existing = await FileSystem.getInfoAsync(shareFilePath);
+        if (existing.exists) {
+          await FileSystem.deleteAsync(shareFilePath, { idempotent: true });
+        }
+      } catch {
+        // Ignore cache cleanup failures and continue with the new snapshot.
+      }
+
+      await FileSystem.copyAsync({ from: sourceUri, to: shareFilePath });
 
       const canShare = await Sharing.isAvailableAsync();
       if (!canShare) {
@@ -347,8 +384,8 @@ export default function ShareScreen() {
 
       await Sharing.shareAsync(shareFilePath, {
         dialogTitle: "Share Aura Result",
-        mimeType: "image/svg+xml",
-        UTI: "public.svg-image",
+        mimeType: "image/png",
+        UTI: "public.png",
       });
     } catch (error) {
       console.error(error);
@@ -410,7 +447,11 @@ export default function ShareScreen() {
           />
 
           <Text style={styles.shareLabel}>Theme</Text>
-          <View style={styles.choiceRow}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.themeRow}
+          >
             {SHARE_CARD_THEMES.map((theme) => {
               const isSelected = theme.id === shareThemeId;
 
@@ -418,15 +459,16 @@ export default function ShareScreen() {
                 <Pressable
                   key={theme.id}
                   onPress={() => setShareThemeId(theme.id)}
-                  style={[styles.choiceChip, isSelected && styles.choiceChipSelected]}
+                  style={[styles.themeChip, isSelected && styles.themeChipSelected]}
                 >
+                  <View style={[styles.themeColorSwatch, { backgroundColor: theme.accent }]} />
                   <Text style={[styles.choiceChipText, isSelected && styles.choiceChipTextSelected]}>
                     {theme.label}
                   </Text>
                 </Pressable>
               );
             })}
-          </View>
+          </ScrollView>
 
           <Text style={styles.shareLabel}>Font</Text>
           <View style={styles.choiceRow}>
@@ -454,23 +496,87 @@ export default function ShareScreen() {
           </View>
 
               <Text style={styles.shareLabel}>Layout</Text>
-              <View style={styles.choiceRow}>
+              <View style={styles.checkboxGrid}>
                 {[
                   { id: 'detailed', label: 'Detailed' },
                   { id: 'minimal', label: 'Minimal' },
                 ].map((opt) => {
                   const isSelected = layoutDensity === opt.id;
+
                   return (
-                    <Pressable key={opt.id} onPress={() => setLayoutDensity(opt.id as any)} style={[styles.choiceChip, isSelected && styles.choiceChipSelected]}>
-                      <Text style={[styles.choiceChipText, isSelected && styles.choiceChipTextSelected]}>{opt.label}</Text>
+                    <Pressable
+                      key={opt.id}
+                      onPress={() => setLayoutDensity(opt.id as any)}
+                      style={[styles.checkboxOption, isSelected && styles.checkboxOptionSelected]}
+                    >
+                      <View style={[styles.checkboxBox, isSelected && styles.checkboxBoxSelected]}>
+                        <Text style={[styles.checkboxCheck, isSelected && styles.checkboxCheckVisible]}>✓</Text>
+                      </View>
+                      <Text style={[styles.checkboxLabel, isSelected && styles.checkboxLabelSelected]}>{opt.label}</Text>
                     </Pressable>
                   );
                 })}
               </View>
+
+              <View style={styles.sliderRow}>
+                <View style={styles.sliderColumn}>
+                  <Text style={styles.shareLabel}>Aura</Text>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={`Aura ${showAura ? 'on' : 'off'}`}
+                    onPress={() => setShowAura((current) => !current)}
+                    style={styles.aspectSlider}
+                  >
+                    <View style={styles.aspectSliderTrack}>
+                      <View style={[styles.aspectSliderThumb, showAura ? styles.aspectSliderThumbOn : styles.aspectSliderThumbOff]} />
+
+                      <View style={styles.aspectSliderOption}>
+                        <View style={[styles.aspectIconFrame, !showAura && styles.aspectIconFrameSelected]}>
+                          <View style={styles.aspectIconOutline} />
+                        </View>
+                      </View>
+
+                      <View style={styles.aspectSliderOption}>
+                        <View style={[styles.aspectIconFrame, showAura && styles.aspectIconFrameSelected]}>
+                          <View style={styles.aspectIconFilled} />
+                        </View>
+                      </View>
+                    </View>
+                  </Pressable>
+                </View>
+
+                <View style={styles.sliderColumn}>
+                  <Text style={styles.shareLabel}>Aspect Ratio</Text>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={`Aspect ratio ${aspectRatio === '1:1' ? 'square' : 'rectangle'}`}
+                    onPress={() => setAspectRatio((current) => (current === '1:1' ? '9:16' : '1:1'))}
+                    style={styles.aspectSlider}
+                  >
+                    <View style={styles.aspectSliderTrack}>
+                      <View style={[styles.aspectSliderThumb, aspectRatio === '1:1' ? styles.aspectSliderThumbSquare : styles.aspectSliderThumbRectangle]} />
+
+                      <View style={styles.aspectSliderOption}>
+                        <View style={[styles.aspectIconFrame, aspectRatio === '9:16' && styles.aspectIconFrameSelected]}>
+                          <View style={styles.aspectIconRectangle} />
+                        </View>
+                      </View>
+
+                      <View style={styles.aspectSliderOption}>
+                        <View style={[styles.aspectIconFrame, aspectRatio === '1:1' && styles.aspectIconFrameSelected]}>
+                          <View style={styles.aspectIconSquare} />
+                        </View>
+                      </View>
+                    </View>
+                  </Pressable>
+                </View>
+              </View>
         </View>
 
         <View style={styles.previewWrapper}>
-          <View
+          <ViewShot ref={previewShotRef} options={{ format: "png", quality: 1, result: "tmpfile" }}>
+            <View
+              collapsable={false}
             style={[
               styles.previewCard,
               {
@@ -522,19 +628,25 @@ export default function ShareScreen() {
                       {tierMessage}
                     </Text>
                     <View style={{ marginTop: 12, alignSelf: 'flex-start', backgroundColor: selectedShareTheme.accent, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 18 }}>
-                      <Text style={{ color: '#021018', fontWeight: '700', fontSize: 12 }}>TOP 8%</Text>
+                      <Text style={{ color: '#021018', fontWeight: '700', fontSize: 12 }}>{getTopBadgeLabel(finalScore)}</Text>
                     </View>
 
-                    <View style={{ marginTop: 12, flexDirection: 'row', gap: 8 }}>
-                      <View style={{ backgroundColor: '#0B1221', borderWidth: 1, borderColor: selectedShareTheme.accent, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16 }}>
-                        <Text style={{ color: selectedShareTheme.accent, fontWeight: '700', fontSize: 12 }}>⚡ Focus</Text>
-                      </View>
-                      <View style={{ backgroundColor: '#0B1221', borderWidth: 1, borderColor: selectedShareTheme.accent, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16 }}>
-                        <Text style={{ color: selectedShareTheme.accent, fontWeight: '700', fontSize: 12 }}>🌿 Calm</Text>
-                      </View>
-                      <View style={{ backgroundColor: '#0B1221', borderWidth: 1, borderColor: selectedShareTheme.accent, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16 }}>
-                        <Text style={{ color: selectedShareTheme.accent, fontWeight: '700', fontSize: 12 }}>✨ Locked In</Text>
-                      </View>
+                    <View style={{ marginTop: 12, flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+                      {showCalmBadge ? (
+                        <View style={{ backgroundColor: '#0B1221', borderWidth: 1, borderColor: selectedShareTheme.accent, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16 }}>
+                          <Text style={{ color: selectedShareTheme.accent, fontWeight: '700', fontSize: 12 }}>🌿 Calm</Text>
+                        </View>
+                      ) : null}
+                      {showFocusBadge ? (
+                        <View style={{ backgroundColor: '#0B1221', borderWidth: 1, borderColor: selectedShareTheme.accent, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16 }}>
+                          <Text style={{ color: selectedShareTheme.accent, fontWeight: '700', fontSize: 12 }}>⚡ Focus</Text>
+                        </View>
+                      ) : null}
+                      {showLockedInBadge ? (
+                        <View style={{ backgroundColor: '#0B1221', borderWidth: 1, borderColor: selectedShareTheme.accent, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16 }}>
+                          <Text style={{ color: selectedShareTheme.accent, fontWeight: '700', fontSize: 12 }}>✨ Locked In</Text>
+                        </View>
+                      ) : null}
                     </View>
                     <View style={{ marginTop: 16, width: 240 }}>
                       <View style={{ height: 6, backgroundColor: '#0f2230', borderRadius: 999, position: 'relative' }}>
@@ -569,32 +681,9 @@ export default function ShareScreen() {
                 <Text style={[styles.previewBrand, { color: selectedShareTheme.accent }]}>my-aura-app</Text>
               </View>
             </View>
-          </View>
+            </View>
+          </ViewShot>
 
-          <Text style={styles.shareLabel}>Background Style</Text>
-          <View style={styles.choiceRow}>
-            <Pressable onPress={() => setShowAura(true)} style={[styles.choiceChip, showAura && styles.choiceChipSelected]}>
-              <Text style={[styles.choiceChipText, showAura && styles.choiceChipTextSelected]}>Aura On</Text>
-            </Pressable>
-            <Pressable onPress={() => setShowAura(false)} style={[styles.choiceChip, !showAura && styles.choiceChipSelected]}>
-              <Text style={[styles.choiceChipText, !showAura && styles.choiceChipTextSelected]}>Aura Off</Text>
-            </Pressable>
-          </View>
-          <Text style={styles.shareLabel}>Aspect Ratio</Text>
-          <View style={styles.choiceRow}>
-            {[
-              { id: '9:16', label: '9:16 (Story)' },
-              { id: '1:1', label: '1:1 (Square)' },
-              { id: 'transparent', label: 'Transparent PNG' },
-            ].map((opt) => {
-              const isSelected = aspectRatio === opt.id;
-              return (
-                <Pressable key={opt.id} onPress={() => setAspectRatio(opt.id as any)} style={[styles.choiceChip, isSelected && styles.choiceChipSelected]}>
-                  <Text style={[styles.choiceChipText, isSelected && styles.choiceChipTextSelected]}>{opt.label}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
         </View>
 
         {Platform.OS !== "web" ? (
@@ -695,6 +784,168 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     gap: 8,
   },
+  themeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingVertical: 2,
+    paddingRight: 4,
+  },
+  sliderRow: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  sliderColumn: {
+    flex: 1,
+    gap: 8,
+  },
+  checkboxGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+  checkboxOption: {
+    flexGrow: 1,
+    flexBasis: "48%",
+    minHeight: 52,
+    borderWidth: 1,
+    borderColor: "#475569",
+    borderRadius: 14,
+    backgroundColor: "#0B1221",
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  checkboxOptionSelected: {
+    borderColor: "#22D3EE",
+    backgroundColor: "#083344",
+  },
+  checkboxBox: {
+    width: 18,
+    height: 18,
+    borderRadius: 5,
+    borderWidth: 1.5,
+    borderColor: "#64748B",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent",
+  },
+  checkboxBoxSelected: {
+    borderColor: "#67E8F9",
+    backgroundColor: "#67E8F9",
+  },
+  checkboxCheck: {
+    color: "transparent",
+    fontSize: 12,
+    fontWeight: "900",
+    lineHeight: 12,
+  },
+  checkboxCheckVisible: {
+    color: "#06212A",
+  },
+  checkboxLabel: {
+    color: "#CBD5E1",
+    fontWeight: "700",
+    fontSize: 13,
+  },
+  checkboxLabelSelected: {
+    color: "#E0F2FE",
+  },
+  aspectSlider: {
+    borderWidth: 1,
+    borderColor: "#475569",
+    borderRadius: 18,
+    backgroundColor: "#0B1221",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  aspectSliderTrack: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    position: "relative",
+    minHeight: 48,
+  },
+  aspectSliderThumb: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    width: "48%",
+    borderRadius: 14,
+    backgroundColor: "#083344",
+    borderWidth: 1,
+    borderColor: "#22D3EE",
+  },
+  aspectSliderThumbSquare: {
+    right: 0,
+  },
+  aspectSliderThumbRectangle: {
+    left: 0,
+  },
+  aspectSliderOption: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    zIndex: 1,
+  },
+  aspectIconFrame: {
+    width: 26,
+    height: 26,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 999,
+    backgroundColor: "transparent",
+  },
+  aspectIconFrameSelected: {
+    backgroundColor: "rgba(34, 211, 238, 0.18)",
+  },
+  aspectIconSquare: {
+    width: 14,
+    height: 14,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: "#CBD5E1",
+    backgroundColor: "transparent",
+  },
+  aspectIconRectangle: {
+    width: 16,
+    height: 11,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: "#CBD5E1",
+    backgroundColor: "transparent",
+  },
+  aspectIconOutline: {
+    width: 13,
+    height: 13,
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: "#CBD5E1",
+    backgroundColor: "transparent",
+  },
+  aspectIconFilled: {
+    width: 13,
+    height: 13,
+    borderRadius: 999,
+    backgroundColor: "#CBD5E1",
+  },
+  aspectOptionLabel: {
+    color: "#94A3B8",
+    fontWeight: "700",
+    fontSize: 12,
+  },
+  aspectOptionLabelSelected: {
+    color: "#67E8F9",
+  },
+  aspectSliderThumbOn: {
+    right: 0,
+  },
+  aspectSliderThumbOff: {
+    left: 0,
+  },
   choiceChip: {
     borderWidth: 1,
     borderColor: "#475569",
@@ -714,6 +965,28 @@ const styles = StyleSheet.create({
   },
   choiceChipTextSelected: {
     color: "#67E8F9",
+  },
+  themeChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    borderWidth: 1,
+    borderColor: "#475569",
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    backgroundColor: "#0B1221",
+  },
+  themeChipSelected: {
+    borderColor: "#22D3EE",
+    backgroundColor: "#083344",
+  },
+  themeColorSwatch: {
+    width: 12,
+    height: 12,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.35)",
   },
   previewWrapper: {
     width: "100%",
@@ -764,7 +1037,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   previewBrand: {
-    marginTop: -34,
+    marginTop: 20,
     letterSpacing: 2,
     fontSize: 10,
     fontWeight: "700",

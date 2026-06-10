@@ -10,9 +10,11 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle } from "react-native-svg";
 import questionsData from "./questions.json";
 import { setSharePayload } from "./share-session";
@@ -79,6 +81,7 @@ type CircularTimerProps = {
   displayTimeRemaining?: number;
   refillStartFraction?: number;
   refillStartValue?: number;
+  size: number;
 };
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -89,6 +92,7 @@ type RefillTimerProps = {
   startFraction: number;
   startValue: number;
   questionId: string;
+  size: number;
 };
 
 function RefillTimer({
@@ -97,6 +101,7 @@ function RefillTimer({
   startFraction,
   startValue,
   questionId,
+  size,
 }: RefillTimerProps) {
   const progressRef = useRef(new Animated.Value(startFraction)).current;
   const [displayValue, setDisplayValue] = useState(startValue);
@@ -128,8 +133,7 @@ function RefillTimer({
     };
   }, [duration, progressRef, questionId, startFraction, startValue, totalTime]);
 
-  const size = 120;
-  const strokeWidth = 8;
+  const strokeWidth = Math.max(6, Math.round(size * 0.07));
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = progressRef.interpolate({
@@ -142,7 +146,7 @@ function RefillTimer({
       : Math.floor(displayValue).toString();
 
   return (
-    <View style={styles.timerContainer}>
+    <View style={[styles.timerContainer, { width: size, height: size }]}>
       <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         <Circle
           cx={size / 2}
@@ -169,10 +173,10 @@ function RefillTimer({
       </Svg>
       <View style={styles.timerOverlay} pointerEvents="none">
         <View style={styles.timerTextContainer}>
-          <Text style={[styles.timerTimeText, { color: "#2fff3d" }]}>
+          <Text style={[styles.timerTimeText, { color: "#2fff3d", fontSize: Math.round(size * 0.27), lineHeight: Math.round(size * 0.29) }]}> 
             {refillDisplayLabel}
           </Text>
-          <Text style={styles.timerBonusLabel}>REFILL</Text>
+          <Text style={[styles.timerBonusLabel, { bottom: -Math.round(size * 0.12), fontSize: Math.max(8, Math.round(size * 0.085)) }]}>REFILL</Text>
         </View>
       </View>
     </View>
@@ -193,6 +197,7 @@ function CircularTimer({
   displayTimeRemaining,
   refillStartFraction = 0,
   refillStartValue = 0,
+  size,
 }: CircularTimerProps) {
   // Logic to determine color based on Aura states
   // Bonus zone: solid yellow until bonus time runs out
@@ -222,12 +227,15 @@ function CircularTimer({
         startFraction={refillStartFraction}
         startValue={refillStartValue}
         questionId={questionId}
+        size={size}
       />
     );
   }
 
+  const strokeWidth = Math.max(6, Math.round(size * 0.07));
+
   return (
-    <View style={styles.timerContainer}>
+    <View style={[styles.timerContainer, { width: size, height: size }]}>
       <CountdownCircleTimer
         key={questionId}
         isPlaying={isPlaying ?? timeRemaining > 0}
@@ -237,8 +245,8 @@ function CircularTimer({
         colors={colors}
         colorsTime={colorsTime}
         updateInterval={0.1}
-        size={120}
-        strokeWidth={8}
+        size={size}
+        strokeWidth={strokeWidth}
         trailColor="#222"
         onComplete={() => {
           return { shouldRepeat: false };
@@ -247,11 +255,11 @@ function CircularTimer({
         {({ remainingTime, color }) => {
           return (
             <View style={styles.timerTextContainer}>
-              <Text style={[styles.timerTimeText, { color }]}>
+              <Text style={[styles.timerTimeText, { color, fontSize: Math.round(size * 0.27), lineHeight: Math.round(size * 0.29) }]}> 
                 {Math.max(0, Math.ceil(displayTimeRemaining ?? timeRemaining))}
               </Text>
               {remainingTime > totalTime - bonusTime && (
-                <Text style={styles.timerBonusLabel}>BONUS</Text>
+                <Text style={[styles.timerBonusLabel, { bottom: -Math.round(size * 0.12), fontSize: Math.max(8, Math.round(size * 0.085)) }]}>BONUS</Text>
               )}
             </View>
           );
@@ -305,6 +313,8 @@ function getAuraTier(score: number) {
 
 export default function Index() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const { width: screenWidth } = useWindowDimensions();
   const [currentStep, setCurrentStep] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [timerMode, setTimerMode] = useState<"countdown" | "refill">("countdown");
@@ -734,6 +744,8 @@ export default function Index() {
 
   const effectiveTimerTotalTime = timerMode === "refill" ? timerTotalTime : totalQuestionTime;
   const effectiveTimerBonusTime = timerMode === "refill" ? timerBonusTime : bonusTime;
+  const timerSize = Math.max(64, Math.min(110, Math.round(screenWidth * 0.18)));
+  const topSafeSpace = Math.max(12, insets.top + 8);
 
   return (
     <View style={{ flex: 1 }}>
@@ -771,7 +783,7 @@ export default function Index() {
           />
         </Animated.View>
 
-        <View style={styles.headerContainer}>
+        <View style={[styles.headerContainer, { paddingTop: topSafeSpace }]}>
           <Text style={styles.header}>AURA Calculator</Text>
           <CircularTimer
             timeRemaining={timeRemaining}
@@ -779,6 +791,7 @@ export default function Index() {
             bonusTime={effectiveTimerBonusTime}
             isLowTime={isLowTime}
             questionId={timerRenderKey}
+            size={timerSize}
             mode={timerMode}
             duration={timerMode === "refill" ? timerRefillDuration : totalQuestionTime}
             initialRemainingTime={timerInitialRemainingTime}
@@ -894,7 +907,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: "row",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 16,
@@ -902,6 +915,7 @@ const styles = StyleSheet.create({
     position: "relative",
     minHeight: 60,
     width: "100%",
+    marginBottom: 10,
   },
   container: {
     flexGrow: 1,
@@ -923,10 +937,8 @@ const styles = StyleSheet.create({
     color: "#F8FAFC",
     fontSize: 32,
     fontWeight: "800",
-    position: "absolute",
-    left: 20,
-    top: "50%",
-    transform: [{ translateY: -12 }],
+    flex: 1,
+    marginLeft: 0,
   },
   resultHeader: {
     color: "#F8FAFC",
@@ -936,13 +948,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   timerContainer: {
-    position: "absolute",
-    right: 20,
-    top: 8,
     justifyContent: "center",
     alignItems: "center",
-    width: 120,
-    height: 120,
+    marginLeft: 12,
   },
   timerTextContainer: {
     alignItems: "center",
