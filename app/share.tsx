@@ -4,6 +4,7 @@ import * as Sharing from "expo-sharing";
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
   Alert,
+  Dimensions,
   Platform,
   Pressable,
   SafeAreaView,
@@ -78,6 +79,7 @@ function isBadgeUnlocked(score: number, threshold: number) {
   return score >= threshold;
 }
 
+// future feature
 function getTopBadgeLabel(score: number) {
   const safePercent = Math.max(0, Math.min(100, Math.round((score / AURA_SCORE_MAX) * 100)));
   return `TOP ${safePercent}%`;
@@ -235,158 +237,197 @@ export default function ShareScreen() {
   const showFocusBadge = isBadgeUnlocked(finalScore, FOCUS_UNLOCK_SCORE);
   const showLockedInBadge = isBadgeUnlocked(finalScore, LOCKED_IN_UNLOCK_SCORE);
 
+  
+
   const handleShareImage = useCallback(async () => {
     setIsPreparingShareImage(true);
 
+    const isNativeMobile = Platform.OS === 'ios' || Platform.OS === 'android';
+    const isMobileBrowser =
+      Platform.OS === 'web' &&
+      typeof window !== 'undefined' &&
+      (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+        Dimensions.get('window').width < 768);
+
+    const isPhone = isNativeMobile || isMobileBrowser;
+
     try {
-      if (Platform.OS === "web") {
-        const safeName = escapeHtml(shareDisplayName.trim());
-        const safeDetails = escapeHtml(shareDetails.trim());
-        const safeTierTitle = escapeHtml(tierTitle);
-        const safeTierMessage = escapeHtml(tierMessage);
+      // ─── Native iOS / Android ───────────────────────────────────────────────
+      if (isNativeMobile) {
+        if (!previewShotRef.current) throw new Error("Preview is not ready");
 
-        const exportWidth = 1080;
-        const exportHeight = aspectRatio === '1:1' ? 1080 : 1920;
+        const slug = tierTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+        const shareDirectory = FileSystem.cacheDirectory ?? FileSystem.documentDirectory ?? "";
+        const shareFilePath = ensureFileUri(`${shareDirectory}aura-${slug || "result"}.png`);
 
-        const wrapper = document.createElement("div");
-        wrapper.style.position = "fixed";
-        wrapper.style.left = "-9999px";
-        wrapper.style.top = "0";
-        wrapper.style.width = `${exportWidth}px`;
-        wrapper.style.height = `${exportHeight}px`;
-        wrapper.style.overflow = "hidden";
-        wrapper.style.zIndex = "-1";
-
-        const exportNode = document.createElement("div");
-        exportNode.style.width = `${exportWidth}px`;
-        exportNode.style.height = `${exportHeight}px`;
-        exportNode.style.background = selectedShareTheme.background;
-        exportNode.style.padding = "96px";
-        exportNode.style.boxSizing = "border-box";
-        exportNode.style.fontFamily = `${shareFontFamily}, sans-serif`;
-
-        const exportProgress = Math.max(0, Math.min(100, finalScore)) / 100;
-        const exportDate = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric' }).toUpperCase();
-        const exportShowDetails = layoutDensity === 'detailed';
-        const exportShowAura = showAura;
-        exportNode.innerHTML = `
-            <div style="
-            height: 100%;
-            border-radius: 56px;
-            border: 2px solid ${selectedShareTheme.accent};
-            background: ${exportShowAura ? 'radial-gradient(circle at 220px 420px, rgba(6,182,212,0.24) 0%, rgba(6,182,212,0.06) 30%, transparent 60%), #0f172a' : '#0f172a'};
-            color: ${selectedShareTheme.text};
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 78px;
-            box-sizing: border-box;
-          ">
-            <div style="position:relative;">
-              <div style="position:absolute; top:18px; right:18px; color: ${selectedShareTheme.muted}; opacity:0.8; font-size:14px;">${exportDate}</div>
-            <div>
-              <p style="letter-spacing: 8px; margin: 0 0 18px; color: ${selectedShareTheme.accent}; font-size: 34px;">AURA RESULT</p>
-              <h1 style="margin: 0; font-size: 134px; line-height: 1.02; background: linear-gradient(180deg, #ffffff 0%, #C0C0C0 100%); -webkit-background-clip: text; color: transparent;">${Number.isFinite(finalScore) ? finalScore : 0}</h1>
-              <h2 style="margin: 28px 0 0; font-size: 54px; line-height: 1.2; font-weight: 900; font-family: Helvetica, Arial, sans-serif;">${safeTierTitle}</h2>
-              ${exportShowDetails ? `
-                <p style="margin: 24px 0 0; color: ${selectedShareTheme.muted}; font-size: 36px; line-height: 1.45; opacity: 0.7;">${safeTierMessage}</p>
-                <div style="margin-top: 14px; display:flex; gap:10px;">
-                  <div style="background:#0B1221; border:1px solid ${selectedShareTheme.accent}; padding:8px 14px; border-radius:18px; color: ${selectedShareTheme.accent}; font-weight:700;">⚡ Focus</div>
-                  <div style="background:#0B1221; border:1px solid ${selectedShareTheme.accent}; padding:8px 14px; border-radius:18px; color: ${selectedShareTheme.accent}; font-weight:700;">🌿 Calm</div>
-                  <div style="background:#0B1221; border:1px solid ${selectedShareTheme.accent}; padding:8px 14px; border-radius:18px; color: ${selectedShareTheme.accent}; font-weight:700;">✨ Locked In</div>
-                </div>
-                <div style="margin-top:20px; width:420px;">
-                  <div style="height:6px; background:#0f2230; border-radius:999px; position:relative;">
-                    <div style="position:absolute; left: ${Math.round((Math.max(0, Math.min(100, finalScore)) / 100) * 100)}%; top: -7px; transform: translateX(-50%); width:18px; height:18px; border-radius:9px; background: ${selectedShareTheme.accent}; border:2px solid #fff;"></div>
-                  </div>
-                </div>
-                <div style="margin-top: 14px; display: inline-block; background: ${selectedShareTheme.accent}; color: #021018; padding: 8px 18px; border-radius: 24px; font-weight: 700; font-size: 18px;">${getTopBadgeLabel(finalScore)}</div>
-              ` : ''}
-            </div>
-            <div>
-              ${safeName ? `<p style="margin: 0; font-size: 46px; color: ${selectedShareTheme.accent};">${safeName}</p>` : ""}
-              ${safeDetails ? `<p style="margin: ${safeName ? "24px" : "0"} 0 0; font-size: 34px; line-height: 1.45; color: ${selectedShareTheme.muted};">${safeDetails}</p>` : ""}
-              <p style="margin: -8px 0 0; letter-spacing: 5px; font-size: 24px; color: ${selectedShareTheme.accent};">my-aura-app</p>
-            </div>
-          </div>
-        `;
-
-        wrapper.appendChild(exportNode);
-        document.body.appendChild(wrapper);
-
-        await nextFrame();
-        if (document.fonts?.ready) {
-          await document.fonts.ready;
-        }
-        await nextFrame();
-
-        const { toBlob } = await import("html-to-image");
-        const blob = await toBlob(exportNode, {
-          cacheBust: true,
-          pixelRatio: Math.max(2, typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1),
-          width: exportWidth,
-          height: exportHeight,
+        const previewCapturePath = await captureRef(previewShotRef, {
+          format: "png",
+          quality: 1,
+          result: "tmpfile",
         });
 
-        if (!blob) {
-          throw new Error("No blob generated");
+        if (!previewCapturePath) throw new Error("No preview image generated");
+
+        const sourceUri = ensureFileUri(previewCapturePath);
+
+        try {
+          const existing = await FileSystem.getInfoAsync(shareFilePath);
+          if (existing.exists) await FileSystem.deleteAsync(shareFilePath, { idempotent: true });
+        } catch {
+          // ignore cache cleanup failures
         }
 
-        const downloadUrl = URL.createObjectURL(blob);
+        await FileSystem.copyAsync({ from: sourceUri, to: shareFilePath });
+
+        const canShare = await Sharing.isAvailableAsync();
+        if (!canShare) throw new Error("Sharing is not available on this device");
+
+        await Sharing.shareAsync(shareFilePath, {
+          dialogTitle: "Share Aura Result",
+          mimeType: "image/png",
+          UTI: "public.png",
+        });
+
+        return;
+      }
+
+      // ─── Web (both desktop and mobile browser) ──────────────────────────────
+      const exportWidth = 1080;
+      const exportHeight = aspectRatio === '1:1' ? 1080 : 1920;
+
+      // Build the off-screen node (shared by both web paths)
+      const wrapper = document.createElement("div");
+      wrapper.style.cssText = `position:fixed;left:-9999px;top:0;width:${exportWidth}px;height:${exportHeight}px;overflow:hidden;z-index:-1;`;
+
+      const exportNode = document.createElement("div");
+      exportNode.style.cssText = `width:${exportWidth}px;height:${exportHeight}px;background:${selectedShareTheme.background};padding:96px;box-sizing:border-box;font-family:${shareFontFamily},sans-serif;`;
+
+      const exportDate = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric' }).toUpperCase();
+      const exportShowDetails = layoutDensity === 'detailed';
+      const safeName = escapeHtml(shareDisplayName.trim());
+      const safeDetails = escapeHtml(shareDetails.trim());
+      const safeTierTitle = escapeHtml(tierTitle);
+      const safeTierMessage = escapeHtml(tierMessage);
+
+      exportNode.innerHTML = `
+        <div style="height:100%;border-radius:56px;border:2px solid ${selectedShareTheme.accent};background:${showAura ? `radial-gradient(circle at 220px 420px, rgba(6,182,212,0.24) 0%, rgba(6,182,212,0.06) 30%, transparent 60%), #0f172a` : '#0f172a'};color:${selectedShareTheme.text};display:flex;flex-direction:column;justify-content:space-between;padding:78px;box-sizing:border-box;">
+          <div style="position:relative;">
+            <div style="position:absolute;top:18px;right:18px;color:${selectedShareTheme.muted};opacity:0.8;font-size:14px;">${exportDate}</div>
+            <div>
+              <p style="letter-spacing:8px;margin:0 0 18px;color:${selectedShareTheme.accent};font-size:34px;">AURA RESULT</p>
+              <h1 style="margin:0;font-size:134px;line-height:1.02;background:linear-gradient(180deg,#ffffff 0%,#C0C0C0 100%);-webkit-background-clip:text;color:transparent;">${Number.isFinite(finalScore) ? finalScore : 0}</h1>
+              <h2 style="margin:28px 0 0;font-size:54px;line-height:1.2;font-weight:900;font-family:Helvetica,Arial,sans-serif;">${safeTierTitle}</h2>
+              ${exportShowDetails ? `
+                <p style="margin:24px 0 0;color:${selectedShareTheme.muted};font-size:36px;line-height:1.45;opacity:0.7;">${safeTierMessage}</p>
+                <div style="margin-top:14px;display:flex;gap:10px;">
+                  <div style="background:#0B1221;border:1px solid ${selectedShareTheme.accent};padding:8px 14px;border-radius:18px;color:${selectedShareTheme.accent};font-weight:700;">⚡ Focus</div>
+                  <div style="background:#0B1221;border:1px solid ${selectedShareTheme.accent};padding:8px 14px;border-radius:18px;color:${selectedShareTheme.accent};font-weight:700;">🌿 Calm</div>
+                  <div style="background:#0B1221;border:1px solid ${selectedShareTheme.accent};padding:8px 14px;border-radius:18px;color:${selectedShareTheme.accent};font-weight:700;">✨ Locked In</div>
+                </div>
+                <div style="margin-top:20px;width:420px;">
+                  <div style="height:6px;background:#0f2230;border-radius:999px;position:relative;">
+                    <div style="position:absolute;left:${Math.round((Math.max(0, Math.min(100, finalScore)) / 100) * 100)}%;top:-7px;transform:translateX(-50%);width:18px;height:18px;border-radius:9px;background:${selectedShareTheme.accent};border:2px solid #fff;"></div>
+                  </div>
+                </div>
+                <div style="margin-top:14px;display:inline-block;background:${selectedShareTheme.accent};color:#021018;padding:8px 18px;border-radius:24px;font-weight:700;font-size:18px;">${getTopBadgeLabel(finalScore)}</div>
+              ` : ''}
+            </div>
+          </div>
+          <div>
+            ${safeName ? `<p style="margin:0;font-size:46px;color:${selectedShareTheme.accent};">${safeName}</p>` : ""}
+            ${safeDetails ? `<p style="margin:${safeName ? "24px" : "0"} 0 0;font-size:34px;line-height:1.45;color:${selectedShareTheme.muted};">${safeDetails}</p>` : ""}
+            <p style="margin:-8px 0 0;letter-spacing:5px;font-size:24px;color:${selectedShareTheme.accent};">my-aura-app</p>
+          </div>
+        </div>
+      `;
+
+      wrapper.appendChild(exportNode);
+      document.body.appendChild(wrapper);
+
+      await nextFrame();
+      if (document.fonts?.ready) await document.fonts.ready;
+      await nextFrame();
+
+      const { toBlob } = await import("html-to-image");
+      const blob = await toBlob(exportNode, {
+        cacheBust: true,
+        pixelRatio: Math.max(2, window.devicePixelRatio || 1),
+        width: exportWidth,
+        height: exportHeight,
+      });
+
+      wrapper.remove();
+
+      if (!blob) throw new Error("No blob generated");
+
+      const slug = tierTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+      const fileName = `MyAuraResult-${slug || "result"}.png`;
+
+      // ─── Mobile web: use Web Share API with file ─────────────────────────────
+      const file = new File([blob], fileName, { type: "image/png" });
+
+      if (isPhone) {
+        if (!navigator.share) {
+          // fallback download (same as before)
+          const downloadUrl = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = downloadUrl;
+          link.download = fileName;
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          URL.revokeObjectURL(downloadUrl);
+          return;
+        }
+
+        // DON'T await the blob first. Instead, kick off share immediately
+        // so the browser sees it happen synchronously inside the gesture,
+        // then resolve the file promise once toBlob finishes.
+        const { toBlob } = await import("html-to-image");
+
+        const filePromise: Promise<File[]> = toBlob(exportNode, {
+          cacheBust: true,
+          pixelRatio: Math.max(2, window.devicePixelRatio || 1),
+          width: exportWidth,
+          height: exportHeight,
+        }).then((b) => {
+          if (!b) throw new Error("No blob generated");
+          return [new File([b], fileName, { type: "image/png" })];
+        });
+
+        try {
+          await navigator.share({ files: filePromise });
+          return;
+        } catch (err: unknown) {
+          const name = err instanceof Error ? err.name : "";
+          if (name === "AbortError") return; // user dismissed — fine
+          console.warn("navigator.share failed, falling back to download:", err);
+        }
+
+        // fallback: wait for the blob we already started and download it
+        const fallbackBlob = await filePromise.then((files) => files[0]);
+        const downloadUrl = URL.createObjectURL(fallbackBlob);
         const link = document.createElement("a");
-        const slug = tierTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
         link.href = downloadUrl;
-        link.download = `aura-${slug || "result"}.png`;
+        link.download = fileName;
         document.body.appendChild(link);
         link.click();
         link.remove();
         URL.revokeObjectURL(downloadUrl);
-
-        wrapper.remove();
         return;
       }
 
-      if (!previewShotRef.current) {
-        throw new Error("Preview is not ready");
-      }
 
-      const slug = tierTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-      const shareDirectory = FileSystem.cacheDirectory ?? FileSystem.documentDirectory ?? "";
-      const shareFilePath = ensureFileUri(`${shareDirectory}aura-${slug || "result"}.png`);
+      // ─── Desktop web: trigger download ───────────────────────────────────────
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(downloadUrl);
 
-      const previewCapturePath = await captureRef(previewShotRef, {
-        format: "png",
-        quality: 1,
-        result: "tmpfile",
-      });
-
-      if (!previewCapturePath) {
-        throw new Error("No preview image generated");
-      }
-
-      const sourceUri = ensureFileUri(previewCapturePath);
-
-      try {
-        const existing = await FileSystem.getInfoAsync(shareFilePath);
-        if (existing.exists) {
-          await FileSystem.deleteAsync(shareFilePath, { idempotent: true });
-        }
-      } catch {
-        // Ignore cache cleanup failures and continue with the new snapshot.
-      }
-
-      await FileSystem.copyAsync({ from: sourceUri, to: shareFilePath });
-
-      const canShare = await Sharing.isAvailableAsync();
-      if (!canShare) {
-        throw new Error("Sharing is not available on this device");
-      }
-
-      await Sharing.shareAsync(shareFilePath, {
-        dialogTitle: "Share Aura Result",
-        mimeType: "image/png",
-        UTI: "public.png",
-      });
     } catch (error) {
       console.error(error);
       Alert.alert("Export failed", "Could not generate the share image. Please try again.");
@@ -414,6 +455,9 @@ export default function ShareScreen() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.topRow}>
+
+          {/* DEBUG feature: going back to quiz not required */}
+          {/*
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Go back to the result screen"
@@ -422,6 +466,7 @@ export default function ShareScreen() {
           >
             <Text style={styles.backButtonText}>Back</Text>
           </Pressable>
+          */}
         </View>
 
         <Text style={styles.header}>Share Your Aura</Text>
@@ -627,11 +672,15 @@ export default function ShareScreen() {
                     >
                       {tierMessage}
                     </Text>
+
+                    { /* future feature */ }
+                    {/*
                     <View style={{ marginTop: 12, alignSelf: 'flex-start', backgroundColor: selectedShareTheme.accent, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 18 }}>
                       <Text style={{ color: '#021018', fontWeight: '700', fontSize: 12 }}>{getTopBadgeLabel(finalScore)}</Text>
                     </View>
+                    */}
 
-                    <View style={{ marginTop: 12, flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+                    <View style={{ marginTop: 20, flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
                       {showCalmBadge ? (
                         <View style={{ backgroundColor: '#0B1221', borderWidth: 1, borderColor: selectedShareTheme.accent, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16 }}>
                           <Text style={{ color: selectedShareTheme.accent, fontWeight: '700', fontSize: 12 }}>🌿 Calm</Text>
@@ -704,8 +753,11 @@ export default function ShareScreen() {
           <Text style={styles.secondaryButtonText}>
             {isPreparingShareImage
               ? "Preparing image..."
-              : Platform.OS === "web"
-                ? "Download Aura Image (Temp)"
+              : Platform.OS === 'web' && 
+      (typeof window !== 'undefined' && 
+      (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+        Dimensions.get('window').width < 768))
+                ? "Download Aura Image (Temp)" + navigator.canShare ? "canshare" : "cantshare"
                 : "Share Aura Image"}
           </Text>
         </Pressable>
