@@ -2,22 +2,22 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-    Animated,
-    AppState,
-    Easing,
-    Pressable,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    useWindowDimensions,
-    View,
+  Animated,
+  AppState,
+  Easing,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
 } from "react-native";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle } from "react-native-svg";
-import questionsData from "./questions.json";
 import { setSharePayload } from "./share-session";
+import questionsData from "./vfquestions.json";
 
 type Option = {
   label: string;
@@ -938,7 +938,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "800",
     flex: 1,
-    marginLeft: 0,
+    marginLeft: 25,
   },
   resultHeader: {
     color: "#F8FAFC",
