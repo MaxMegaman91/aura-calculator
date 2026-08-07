@@ -16,7 +16,7 @@ import {
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle } from "react-native-svg";
-import { setSharePayload } from "./share-session";
+import { setSharePayload } from "../utils/share-session";
 import questionsData from "./vfquestions.json";
 
 type Option = {

@@ -15,7 +15,7 @@ import {
   View
 } from "react-native";
 import ViewShot, { captureRef } from "react-native-view-shot";
-import { getSharePayload } from "./share-session";
+import { getSharePayload } from "../utils/share-session";
 
 type ShareCardTheme = {
   id: string;
@@ -70,19 +70,13 @@ const SHARE_CARD_THEMES: ShareCardTheme[] = [
 ];
 
 const SHARE_CARD_FONTS = ["Georgia", "Trebuchet MS", "Courier New", "Impact"];
-const CALM_UNLOCK_SCORE = 100;
-const FOCUS_UNLOCK_SCORE = 200;
-const LOCKED_IN_UNLOCK_SCORE = 500;
-const AURA_SCORE_MAX = 2500;
+const FOCUS_UNLOCK_SCORE = 1000;
+const LOCKED_IN_UNLOCK_SCORE = 2000;
+const GOLDEN_UNLOCK_SCORE = 3000;
+
 
 function isBadgeUnlocked(score: number, threshold: number) {
   return score >= threshold;
-}
-
-// future feature
-function getTopBadgeLabel(score: number) {
-  const safePercent = Math.max(0, Math.min(100, Math.round((score / AURA_SCORE_MAX) * 100)));
-  return `TOP ${safePercent}%`;
 }
 
 const nextFrame = () =>
@@ -113,7 +107,7 @@ function hexToRgba(hex: string, alpha = 1) {
 }
 
 function isLikelyPhoneWeb(ScreenWidth: number) {
-  console.log("Platform.OS: \"", Platform.OS, "\"\nwindow:", typeof window, "\nnavigator:", typeof navigator, "\nuserAgent:", navigator?.userAgent);
+  // console.log("Platform.OS: \"", Platform.OS, "\"\nwindow:", typeof window, "\nnavigator:", typeof navigator, "\nuserAgent:", navigator?.userAgent);
   if (Platform.OS !== "web") return false;
   if (typeof window === "undefined" || typeof navigator === "undefined") return false;
 
@@ -125,7 +119,7 @@ function isLikelyPhoneWeb(ScreenWidth: number) {
     ? window.matchMedia("(pointer: coarse)").matches
     : false;
 
-  console.log("isLikelyPhoneWeb:", (uaMobile || (narrowViewport && coarsePointer)));
+  // console.log("isLikelyPhoneWeb:", (uaMobile || (narrowViewport && coarsePointer)));
   return uaMobile || (narrowViewport && coarsePointer);
 }
 
@@ -133,105 +127,35 @@ function ensureFileUri(path: string) {
   return path.startsWith("file://") ? path : `file://${path.replace(/^file:\/\//, "")}`;
 }
 
-function buildShareCardSvg({
-  finalScore,
-  tierTitle,
-  tierMessage,
-  shareDisplayName,
-  shareDetails,
-  shareFontFamily,
-  selectedShareTheme,
-  layoutDensity = "detailed",
-  showAura = true,
-  aspectRatio = '9:16',
-}: {
-  finalScore: number;
-  tierTitle: string;
-  tierMessage: string;
-  shareDisplayName: string;
-  shareDetails: string;
-  shareFontFamily: string;
-  selectedShareTheme: ShareCardTheme;
-  layoutDensity?: "detailed" | "minimal";
-  showAura?: boolean;
-  aspectRatio?: '9:16' | '1:1';
-}) {
-  const safeName = escapeHtml(shareDisplayName.trim());
-  const safeDetails = escapeHtml(shareDetails.trim());
-  const safeTierTitle = escapeHtml(tierTitle);
-  const safeTierMessage = escapeHtml(tierMessage);
-  const safeFont = escapeHtml(shareFontFamily);
-  const progressPercent = Math.max(0, Math.min(100, finalScore)) / 100;
-  const progressBarX = 174 + Math.round(progressPercent * 600);
-  const dateStamp = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric' }).toUpperCase();
-  const svgWidth = 1080;
-  const svgHeight = aspectRatio === '1:1' ? 1080 : 1920;
-  const showCalmBadge = isBadgeUnlocked(finalScore, CALM_UNLOCK_SCORE);
-  const showFocusBadge = isBadgeUnlocked(finalScore, FOCUS_UNLOCK_SCORE);
-  const showLockedInBadge = isBadgeUnlocked(finalScore, LOCKED_IN_UNLOCK_SCORE);
+export function calculateAuraPercent(finalScore: number): number {
+  // 1. Scores <= 0: Max percentage
+  if (finalScore <= 0) {
+    return 100;
+  }
 
-  return `
-    <svg width="1080" height="1920" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Aura result share card">
-      <defs>
-        <linearGradient id="background-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#0b1320" />
-          <stop offset="52%" stop-color="#111827" />
-          <stop offset="100%" stop-color="#1e293b" />
-        </linearGradient>
-        <linearGradient id="score-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#FFFFFF" />
-          <stop offset="100%" stop-color="#C0C0C0" />
-        </linearGradient>
-        <radialGradient id="aura-glow" cx="15%" cy="22%" r="40%">
-          <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.28" />
-          <stop offset="40%" stop-color="#06b6d4" stop-opacity="0.12" />
-          <stop offset="100%" stop-color="transparent" stop-opacity="0" />
-        </radialGradient>
-      </defs>
-      <rect width="${svgWidth}" height="${svgHeight}" fill="url(#background-gradient)" />
-      ${showAura ? `<rect x="0" y="0" width="${svgWidth}" height="${svgHeight}" fill="url(#aura-glow)" />` : ``}
-      <rect x="96" y="96" width="888" height="1728" rx="56" fill="#0f172a" stroke="${selectedShareTheme.accent}" stroke-width="2" />
-      <text x="174" y="254" fill="${selectedShareTheme.accent}" font-family="${safeFont}" font-size="34" letter-spacing="8">AURA RESULT</text>
-      <text x="834" y="220" fill="${selectedShareTheme.muted}" font-family="${safeFont}" font-size="18" opacity="0.8">${dateStamp}</text>
-      <text x="174" y="430" fill="url(#score-gradient)" font-family="${safeFont}" font-size="134" font-weight="900">${Number.isFinite(finalScore) ? finalScore : 0}</text>
-      <text x="174" y="520" fill="${selectedShareTheme.text}" font-family="Helvetica, Arial, sans-serif" font-size="54" font-weight="900">${safeTierTitle}</text>
-      ${layoutDensity === "detailed" ? `
-        <text x="174" y="596" fill="${selectedShareTheme.muted}" fill-opacity="0.7" font-family="${safeFont}" font-size="36">${safeTierMessage}</text>
-        <g>
-          <rect x="174" y="620" rx="22" ry="22" width="160" height="48" fill="${selectedShareTheme.accent}" />
-          <text x="254" y="652" fill="#021018" font-family="${safeFont}" font-size="20" font-weight="700" text-anchor="middle">${getTopBadgeLabel(finalScore)}</text>
-        </g>
-        <g>
-          ${showFocusBadge ? `
-            <rect x="174" y="700" rx="20" ry="20" width="156" height="44" fill="#0B1221" stroke="${selectedShareTheme.accent}" />
-            <text x="252" y="730" fill="${selectedShareTheme.accent}" font-family="${safeFont}" font-size="18" font-weight="700" text-anchor="middle">⚡ Focus</text>
-          ` : ""}
+  // 2. Scores between 0 and 2500 (100% -> 25%)
+  if (finalScore <= 2500) {
+    const progress = finalScore / 2500;
+    return 100 - progress * (100 - 25);
+  }
 
-          ${showCalmBadge ? `
-            <rect x="354" y="700" rx="20" ry="20" width="156" height="44" fill="#0B1221" stroke="${selectedShareTheme.accent}" />
-            <text x="432" y="730" fill="${selectedShareTheme.accent}" font-family="${safeFont}" font-size="18" font-weight="700" text-anchor="middle">🌿 Calm</text>
-          ` : ""}
+  // 3. Scores between 2500 and 5000 (25% -> 1% using exponential drop)
+  if (finalScore <= 5000) {
+    const progress = (finalScore - 2500) / 2500;
+    // Exponential decay ensures a realistic curve down to 1%
+    return 25 * Math.pow(1 / 25, progress);
+  }
 
-          ${showLockedInBadge ? `
-            <rect x="534" y="700" rx="20" ry="20" width="156" height="44" fill="#0B1221" stroke="${selectedShareTheme.accent}" />
-            <text x="612" y="730" fill="${selectedShareTheme.accent}" font-family="${safeFont}" font-size="18" font-weight="700" text-anchor="middle">✨ Locked In</text>
-          ` : ""}
-        </g>
-        <g>
-          <line x1="174" x2="834" y="780" stroke="${selectedShareTheme.muted}" stroke-width="6" stroke-linecap="round" opacity="0.35" />
-          <circle cx="${progressBarX}" cy="780" r="14" fill="${selectedShareTheme.accent}" stroke="#ffffff" stroke-width="2" />
-        </g>
-        ${safeName ? `<text x="174" y="1438" fill="${selectedShareTheme.accent}" font-family="${safeFont}" font-size="46" font-weight="800">${safeName}</text>` : ""}
-        ${safeDetails ? `<text x="174" y="1510" fill="${selectedShareTheme.muted}" font-family="${safeFont}" font-size="34">${safeDetails}</text>` : ""}
-      ` : ""}
-      <text x="174" y="1638" fill="${selectedShareTheme.accent}" font-family="${safeFont}" font-size="24" letter-spacing="5">aurarank.ca</text>
-    </svg>
-  `;
+  // 4. Scores above 5000 (1% decaying towards 0.1%)
+  const excessScore = finalScore - 5000;
+  const decayRate = 0.0015; // Controls how fast it approaches 0.1%
+  return 0.1 + 0.9 * Math.exp(-decayRate * excessScore);
 }
 
 export default function ShareScreen() {
   const router = useRouter();
   const previewShotRef = useRef<ViewShot | null>(null);
+
   const payload = getSharePayload();
   const finalScore = payload?.score ?? 0;
   const tierTitle = payload?.tierTitle ?? "Aura Tier";
@@ -250,25 +174,33 @@ export default function ShareScreen() {
   const selectedShareTheme = useMemo(() => {
     return SHARE_CARD_THEMES.find((theme) => theme.id === shareThemeId) ?? SHARE_CARD_THEMES[0];
   }, [shareThemeId]);
-  const previewProgress = Math.max(0, Math.min(100, finalScore)) / 100;
-  const showCalmBadge = isBadgeUnlocked(finalScore, CALM_UNLOCK_SCORE);
+
+  const auraPercent = calculateAuraPercent(finalScore);
+
+  // console.log("[ShareScreen] finalScore:", finalScore, "auraPercent:", auraPercent);
+  const sliderFillPercent = Math.max(0, Math.min(100, 100 - auraPercent));
+  const showTopQuarterBadge = auraPercent < 25;
+  // EDIT HERE: tweak the TOP x% curve by changing calculateAuraPercent above.
+  // The displayed value is clamped to stay below 25% and never below 0.1%.
+  const topPercentValue = Math.max(0.1, Math.min(24.9, auraPercent));
+  const showGoldenBadge = isBadgeUnlocked(finalScore, GOLDEN_UNLOCK_SCORE);
   const showFocusBadge = isBadgeUnlocked(finalScore, FOCUS_UNLOCK_SCORE);
   const showLockedInBadge = isBadgeUnlocked(finalScore, LOCKED_IN_UNLOCK_SCORE);
 
   
 
   const isPhoneWeb = useMemo(() => isLikelyPhoneWeb(width), []);
-  console.log("[ShareScreen] isPhoneWeb:", isPhoneWeb);
+  // console.log("[ShareScreen] isPhoneWeb:", isPhoneWeb);
 
   const handleShareImage = useCallback(async () => {
     setIsPreparingShareImage(true);
 
-    console.log("[SHARE] starting image preparation")
+    // console.log("[SHARE] starting image preparation")
     try {
       // Native fallback (if opened as app instead of website)
       if (Platform.OS !== "web") {
 
-        console.log("[SHARE] starting image capture for native share")
+        // console.log("[SHARE] starting image capture for native share")
         if (!previewShotRef.current) throw new Error("Preview is not ready");
 
         const previewCapturePath = await captureRef(previewShotRef, {
@@ -279,12 +211,12 @@ export default function ShareScreen() {
 
         if (!previewCapturePath) throw new Error("No preview image generated");
 
-        console.log("[SHARE] captured image at:", previewCapturePath)
+        // console.log("[SHARE] captured image at:", previewCapturePath)
         
         const fileUrl = ensureFileUri(previewCapturePath);
         const NativeShare = (await import("react-native-share")).default;
 
-        console.log("[SHARE] opening native share sheet with fileUrl:", fileUrl)
+        // console.log("[SHARE] opening native share sheet with fileUrl:", fileUrl)
         await NativeShare.open({
           url: fileUrl,
           type: "image/png",
@@ -309,37 +241,50 @@ export default function ShareScreen() {
 
       const exportDate = new Date().toLocaleString("en-US", { month: "short", day: "numeric" }).toUpperCase();
       const exportShowDetails = layoutDensity === "detailed";
+      const exportSliderPercent = sliderFillPercent;
       const safeName = escapeHtml(shareDisplayName.trim());
       const safeDetails = escapeHtml(shareDetails.trim());
       const safeTierTitle = escapeHtml(tierTitle);
       const safeTierMessage = escapeHtml(tierMessage);
+      const topPercentLabel = topPercentValue.toFixed(1);
 
       exportNode.innerHTML = `
         <div style="height:100%;border-radius:56px;border:2px solid ${selectedShareTheme.accent};background:${showAura ? `radial-gradient(circle at 220px 420px, rgba(6,182,212,0.24) 0%, rgba(6,182,212,0.06) 30%, transparent 60%), #0f172a` : "#0f172a"};color:${selectedShareTheme.text};display:flex;flex-direction:column;justify-content:space-between;padding:78px;box-sizing:border-box;">
           <div style="position:relative;">
             <div style="position:absolute;top:18px;right:18px;color:${selectedShareTheme.muted};opacity:0.8;font-size:28px;">${exportDate}</div>
             <div>
-              <p style="letter-spacing:8px;margin:0 0 18px;color:${selectedShareTheme.accent};font-size:46px;">AURA RESULT</p>
+              <p style="letter-spacing:8px;margin:0 0 18px;color:${selectedShareTheme.accent};font-size:40px;">AURA RESULT</p>
               <h1 style="margin:0;font-size:160px;line-height:1.02;background:linear-gradient(180deg,#ffffff 0%,#C0C0C0 100%);-webkit-background-clip:text;color:transparent;">${Number.isFinite(finalScore) ? finalScore : 0}</h1>
               <h2 style="margin:28px 0 0;font-size:70px;line-height:1.2;font-weight:900;font-family:Helvetica,Arial,sans-serif;">${safeTierTitle}</h2>
               ${
                 exportShowDetails
                   ? `
-                <p style="margin:24px 0 0;color:${selectedShareTheme.muted};font-size:46px;line-height:1.45;opacity:0.7;">${safeTierMessage}</p>
-                <div style="margin-top:36px;display:flex;gap:20px;flex-wrap:wrap;">
+                <p style="margin:24px 0 50px;color:${selectedShareTheme.muted};font-size:46px;line-height:1.45;opacity:0.7;">${safeTierMessage}</p>
+                ${showTopQuarterBadge ? `<div style="margin-top:18px;display:inline-flex;align-items:center;justify-content:center;background:${selectedShareTheme.accent};color:#021018;border-radius:18px;padding:10px 16px;font-size:40px;font-weight:800;line-height:1;">TOP ${topPercentLabel}%</div>` : ""}
+                <div style="margin-top:30px;display:flex;gap:20px;flex-wrap:wrap;">
+                  
                   ${showFocusBadge ? `<div style="background:#0B1221;border:1px solid ${selectedShareTheme.accent};padding:25px 40px;border-radius:18px;color:${selectedShareTheme.accent};font-weight:1400;"><p style="margin:0;font-size:36px;">⚡ Focus</p></div>` : ""}
-                  ${showCalmBadge ? `<div style="background:#0B1221;border:1px solid ${selectedShareTheme.accent};padding:25px 40px;border-radius:18px;color:${selectedShareTheme.accent};font-weight:1400;"><p style="margin:0;font-size:36px;">🌿 Calm</p></div>` : ""}
                   ${showLockedInBadge ? `<div style="background:#0B1221;border:1px solid ${selectedShareTheme.accent};padding:25px 40px;border-radius:18px;color:${selectedShareTheme.accent};font-weight:1400;"><p style="margin:0;font-size:36px;">✨ Locked In</p></div>` : ""}
+                  ${showGoldenBadge ? `<div style="background:#0B1221;border:1px solid ${selectedShareTheme.accent};padding:25px 40px;border-radius:18px;color:${selectedShareTheme.accent};font-weight:1400;"><p style="margin:0;font-size:36px;">🏅 AuraMaxxing</p></div>` : ""}
                 </div>
               `
                   : ""
               }
+
+              <!-- SLIDER COMPONENT START -->
+              <div style="margin-top:52px;position:relative;width:100%;height:18px;background:rgba(255,255,255,0.12);border-radius:999px;">
+                <!-- Active Track Fill -->
+                <div style="position:absolute;left:0;top:0;height:100%;width:${exportSliderPercent}%;background:${selectedShareTheme.accent};border-radius:999px;opacity:0.6;"></div>
+                <!-- Glowing Circle Thumb -->
+                <div style="position:absolute;left:${exportSliderPercent}%;top:50%;transform:translate(-50%, -50%);width:52px;height:52px;border-radius:50%;background:${selectedShareTheme.accent};border:6px solid #0f172a;box-shadow:0 0 24px ${selectedShareTheme.accent};"></div>
+              </div>
+              <!-- SLIDER COMPONENT END -->
             </div>
           </div>
           <div>
             ${safeName ? `<p style="margin:0;font-size:46px;color:${selectedShareTheme.accent};">${safeName}</p>` : ""}
             ${safeDetails ? `<p style="margin:${safeName ? "24px" : "0"} 0 0;font-size:34px;line-height:1.45;color:${selectedShareTheme.muted};">${safeDetails}</p>` : ""}
-            <p style="margin:12px 0 0;letter-spacing:5px;font-size:24px;color:${selectedShareTheme.accent};">my-aura-app</p>
+            <p style="margin:12px 0 0;letter-spacing:5px;font-size:24px;color:${selectedShareTheme.accent};">aurarank.ca</p>
           </div>
         </div>
       `;
@@ -368,10 +313,10 @@ export default function ShareScreen() {
 
       // Mobile web => share sheet (files)
 
-      console.log("[ShareScreen.handleShareImage] isPhoneWeb:", isPhoneWeb, "navigator.share:", typeof navigator !== "undefined" && "share" in navigator);
+      // console.log("[ShareScreen.handleShareImage] isPhoneWeb:", isPhoneWeb, "navigator.share:", typeof navigator !== "undefined" && "share" in navigator);
       if (isPhoneWeb && typeof navigator !== "undefined" && "share" in navigator) {
 
-        console.log("     continuing...")
+        // console.log("     continuing...")
         const file = new File([blob], fileName, { type: "image/png" });
 
         const canShareFiles =
@@ -379,7 +324,7 @@ export default function ShareScreen() {
             ? navigator.canShare({ files: [file] })
             : false;
 
-        console.log("     canShareFiles:", canShareFiles);
+        // console.log("     canShareFiles:", canShareFiles);
         if (canShareFiles) {
           try {
             await navigator.share({
@@ -389,14 +334,14 @@ export default function ShareScreen() {
             return;
           } catch (err: unknown) {
             const name = err instanceof Error ? err.name : "";
-            console.log("      error sharing:", name, err);
+            // console.log("      error sharing:", name, err);
             if (name === "AbortError") return;
           }
         }
       }
 
       // Desktop web OR fallback => download
-      console.log("[ShareScreen.handleShareImage] fallback to download");
+      // console.log("[ShareScreen.handleShareImage] fallback to download");
       const downloadUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;
@@ -406,7 +351,7 @@ export default function ShareScreen() {
       link.remove();
       URL.revokeObjectURL(downloadUrl);
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       Alert.alert("Export failed", "Could not generate/share the image. Please try again.");
     } finally {
       setIsPreparingShareImage(false);
@@ -431,7 +376,7 @@ export default function ShareScreen() {
     shareDisplayName,
     shareFontFamily,
     showAura,
-    showCalmBadge,
+    showGoldenBadge,
     showFocusBadge,
     showLockedInBadge,
     tierMessage,
@@ -464,14 +409,14 @@ export default function ShareScreen() {
           <TextInput
             value={shareDisplayName}
             onChangeText={setShareDisplayName}
-            placeholder="Optional display name"
+            placeholder="[Optional] Name or Nickname"
             placeholderTextColor="#64748B"
             style={styles.shareInput}
           />
           <TextInput
             value={shareDetails}
             onChangeText={setShareDetails}
-            placeholder="Optional details"
+            placeholder="[Optional] Comments or Details"
             placeholderTextColor="#64748B"
             style={[styles.shareInput, styles.shareInputMultiline]}
             multiline
@@ -661,19 +606,13 @@ export default function ShareScreen() {
                       {tierMessage}
                     </Text>
 
-                    { /* future feature */ }
-                    {/*
-                    <View style={{ marginTop: 12, alignSelf: 'flex-start', backgroundColor: selectedShareTheme.accent, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 18 }}>
-                      <Text style={{ color: '#021018', fontWeight: '700', fontSize: 12 }}>{getTopBadgeLabel(finalScore)}</Text>
-                    </View>
-                    */}
+                    {showTopQuarterBadge ? (
+                      <View style={{ marginTop: 12, alignSelf: 'flex-start', backgroundColor: selectedShareTheme.accent, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 18 }}>
+                        <Text style={{ color: '#021018', fontWeight: '700', fontSize: 12 }}>TOP {topPercentValue.toFixed(1)}%</Text>
+                      </View>
+                    ) : null}
 
                     <View style={{ marginTop: 20, flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-                      {showCalmBadge ? (
-                        <View style={{ backgroundColor: '#0B1221', borderWidth: 1, borderColor: selectedShareTheme.accent, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16 }}>
-                          <Text style={{ color: selectedShareTheme.accent, fontWeight: '700', fontSize: 12 }}>🌿 Calm</Text>
-                        </View>
-                      ) : null}
                       {showFocusBadge ? (
                         <View style={{ backgroundColor: '#0B1221', borderWidth: 1, borderColor: selectedShareTheme.accent, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16 }}>
                           <Text style={{ color: selectedShareTheme.accent, fontWeight: '700', fontSize: 12 }}>⚡ Focus</Text>
@@ -684,10 +623,15 @@ export default function ShareScreen() {
                           <Text style={{ color: selectedShareTheme.accent, fontWeight: '700', fontSize: 12 }}>✨ Locked In</Text>
                         </View>
                       ) : null}
+                      {showGoldenBadge ? (
+                        <View style={{ backgroundColor: '#0B1221', borderWidth: 1, borderColor: selectedShareTheme.accent, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16 }}>
+                          <Text style={{ color: selectedShareTheme.accent, fontWeight: '700', fontSize: 12 }}>🌿 Calm</Text>
+                        </View>
+                      ) : null}
                     </View>
                     <View style={{ marginTop: 16, width: 240 }}>
                       <View style={{ height: 6, backgroundColor: '#0f2230', borderRadius: 999, position: 'relative' }}>
-                        <View style={{ position: 'absolute', left: `${previewProgress * 100}%`, top: -6, transform: [{ translateX: -9 }], width: 18, height: 18, borderRadius: 9, backgroundColor: selectedShareTheme.accent, borderWidth: 2, borderColor: '#fff' }} />
+                        <View style={{ position: 'absolute', left: `${sliderFillPercent}%`, top: -6, transform: [{ translateX: -9 }], width: 18, height: 18, borderRadius: 9, backgroundColor: selectedShareTheme.accent, borderWidth: 2, borderColor: '#fff' }} />
                       </View>
                     </View>
                   </>
