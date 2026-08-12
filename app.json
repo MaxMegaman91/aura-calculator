@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "web": {
       // "output": "static",
-      "favicon": "./assets/images/newicon.ico"
+      "favicon": "./assets/images/newfavicon.png"
     },
     "plugins": [
       "expo-router",

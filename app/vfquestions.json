@@ -1,1213 +1,1213 @@
 ﻿{
-    "measurable":  [
-                       {
-                           "id":  "M_01",
-                           "emoji":  "ðŸ“±",
-                           "title":  "The Dock Check",
-                           "subtitle":  "Look at the very first app on your phone\u0027s bottom dock right now.",
-                           "time":  12,
-                           "bonusTime":  4,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸ› ï¸",
-                                               "label":  "A Utility (Notes, Calendar, Camera)",
-                                               "points":  90
-                                           },
-                                           {
-                                               "emoji":  "ðŸ’¬",
-                                               "label":  "Communication (Messages, WhatsApp)",
-                                               "points":  30
-                                           },
-                                           {
-                                               "emoji":  "ðŸŽ¢",
-                                               "label":  "A Dopamine App (IG, TikTok, X)",
-                                               "points":  -18
-                                           },
-                                           {
-                                               "emoji":  "ðŸŽ®",
-                                               "label":  "A Game / Entertainment",
-                                               "points":  -12
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_02",
-                           "emoji":  "ðŸ””",
-                           "title":  "Notification Debt",
-                           "subtitle":  "How many unread notifications are on your lock screen/icons right now?",
-                           "time":  10,
-                           "bonusTime":  3,
-                           "ordered":  true,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸ§¹",
-                                               "label":  "0 - 5 (Total Control)",
-                                               "points":  120
-                                           },
-                                           {
-                                               "emoji":  "ðŸ“ˆ",
-                                               "label":  "6 - 20 (Slight Debt)",
-                                               "points":  30
-                                           },
-                                           {
-                                               "emoji":  "ðŸŒŠ",
-                                               "label":  "21 - 99 (Mental Chaos)",
-                                               "points":  -9
-                                           },
-                                           {
-                                               "emoji":  "ðŸ’€",
-                                               "label":  "99+ (The Void)",
-                                               "points":  -23
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_03",
-                           "emoji":  "ðŸ”‹",
-                           "title":  "The Battery Reality",
-                           "subtitle":  "What is your current battery percentage?",
-                           "time":  9,
-                           "bonusTime":  3,
-                           "ordered":  true,
-                           "options":  [
-                                           {
-                                               "emoji":  "âš¡",
-                                               "label":  "80% - 100% (Prepared)",
-                                               "points":  75
-                                           },
-                                           {
-                                               "emoji":  "âš–ï¸",
-                                               "label":  "50% - 79% (Stable)",
-                                               "points":  30
-                                           },
-                                           {
-                                               "emoji":  "âš ï¸",
-                                               "label":  "21% - 49% (Declining)",
-                                               "points":  -2
-                                           },
-                                           {
-                                               "emoji":  "ðŸª«",
-                                               "label":  "Under 20% (Chaos)",
-                                               "points":  -14
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_04",
-                           "emoji":  "ðŸ¦’",
-                           "title":  "The Posture Scan",
-                           "subtitle":  "Without moving, look at your neck/back in a mirror or front camera reflection.",
-                           "time":  14,
-                           "bonusTime":  5,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸ¦’",
-                                               "label":  "Stacked and tall",
-                                               "points":  90
-                                           },
-                                           {
-                                               "emoji":  "ðŸ¢",
-                                               "label":  "Slight forward lean",
-                                               "points":  -5
-                                           },
-                                           {
-                                               "emoji":  "ðŸ¦",
-                                               "label":  "Full shrimp/Tech-neck",
-                                               "points":  -18
-                                           },
-                                           {
-                                               "emoji":  "ðŸ›‹ï¸",
-                                               "label":  "Slumped/Lying down",
-                                               "points":  -9
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_05",
-                           "emoji":  "ðŸŒ…",
-                           "title":  "The Morning Pivot",
-                           "subtitle":  "Did you scroll social media within 10 minutes of waking up today?",
-                           "time":  10,
-                           "bonusTime":  3,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸš«",
-                                               "label":  "No, I stayed offline",
-                                               "points":  150
-                                           },
-                                           {
-                                               "emoji":  "â˜•",
-                                               "label":  "Only for specific info (weather/news)",
-                                               "points":  45
-                                           },
-                                           {
-                                               "emoji":  "ðŸ¤³",
-                                               "label":  "Yes, I checked the feed",
-                                               "points":  -16
-                                           },
-                                           {
-                                               "emoji":  "ðŸ”",
-                                               "label":  "It was the first thing I did",
-                                               "points":  -28
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_06",
-                           "emoji":  "ðŸ§¹",
-                           "title":  "The Immediate Radius",
-                           "subtitle":  "Look at the surface you are currently sitting at (desk/table).",
-                           "time":  12,
-                           "bonusTime":  4,
-                           "options":  [
-                                           {
-                                               "emoji":  "âœ¨",
-                                               "label":  "Clear and intentional",
-                                               "points":  75
-                                           },
-                                           {
-                                               "emoji":  "ðŸ“¦",
-                                               "label":  "Functional clutter",
-                                               "points":  15
-                                           },
-                                           {
-                                               "emoji":  "ðŸ—‘ï¸",
-                                               "label":  "Messy/Unorganized",
-                                               "points":  -9
-                                           },
-                                           {
-                                               "emoji":  "ðŸŒ‹",
-                                               "label":  "A total wreck",
-                                               "points":  -18
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_07",
-                           "emoji":  "ðŸ§ ",
-                           "title":  "The Tab Count",
-                           "subtitle":  "How many browser tabs or background apps do you have open right now?",
-                           "time":  12,
-                           "bonusTime":  4,
-                           "ordered":  true,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸŽ¯",
-                                               "label":  "1 - 3 (Focused)",
-                                               "points":  105
-                                           },
-                                           {
-                                               "emoji":  "ðŸ“š",
-                                               "label":  "4 - 10 (Busy)",
-                                               "points":  30
-                                           },
-                                           {
-                                               "emoji":  "ðŸ“‚",
-                                               "label":  "11 - 30 (Scattered)",
-                                               "points":  -7
-                                           },
-                                           {
-                                               "emoji":  "ðŸŒ‹",
-                                               "label":  "I can\u0027t even see the icons",
-                                               "points":  -16
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_08",
-                           "emoji":  "ðŸš­",
-                           "title":  "The Air Quality",
-                           "subtitle":  "Have you used a vape or nicotine product in the last 24 hours?",
-                           "time":  10,
-                           "bonusTime":  3,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸ’Ž",
-                                               "label":  "No (Clean Lungs)",
-                                               "points":  150
-                                           },
-                                           {
-                                               "emoji":  "ðŸŒ¬ï¸",
-                                               "label":  "Socially only",
-                                               "points":  -7
-                                           },
-                                           {
-                                               "emoji":  "ðŸ’¨",
-                                               "label":  "Yes (The flavored air won)",
-                                               "points":  -34
-                                           },
-                                           {
-                                               "emoji":  "â›“ï¸",
-                                               "label":  "Multiple times already",
-                                               "points":  -58
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_09",
-                           "emoji":  "ðŸ”ž",
-                           "title":  "The Retainment Check",
-                           "subtitle":  "Have you consumed adult content in the last 48 hours?",
-                           "time":  10,
-                           "bonusTime":  2,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸ”‹",
-                                               "label":  "No (Retaining Energy)",
-                                               "points":  180
-                                           },
-                                           {
-                                               "emoji":  "âš–ï¸",
-                                               "label":  "No (But I thought about it)",
-                                               "points":  60
-                                           },
-                                           {
-                                               "emoji":  "ðŸª«",
-                                               "label":  "Yes (Folded once)",
-                                               "points":  -28
-                                           },
-                                           {
-                                               "emoji":  "ðŸšï¸",
-                                               "label":  "Yes (It\u0027s a habit)",
-                                               "points":  -69
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_10",
-                           "emoji":  "ðŸ’§",
-                           "title":  "Hydration Status",
-                           "subtitle":  "How much plain water have you drank today?",
-                           "time":  9,
-                           "bonusTime":  3,
-                           "ordered":  true,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸŒŠ",
-                                               "label":  "Over 2 Liters (Peak)",
-                                               "points":  120
-                                           },
-                                           {
-                                               "emoji":  "ðŸ¥¤",
-                                               "label":  "1 Liter (Standard)",
-                                               "points":  60
-                                           },
-                                           {
-                                               "emoji":  "ðŸ¥ƒ",
-                                               "label":  "One glass/bottle",
-                                               "points":  15
-                                           },
-                                           {
-                                               "emoji":  "ðŸœï¸",
-                                               "label":  "None (Caffeine only)",
-                                               "points":  -12
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_11",
-                           "emoji":  "ðŸŽ§",
-                           "title":  "The Sonic Vibe",
-                           "subtitle":  "What type of audio are you listening to (or did you last)?",
-                           "time":  10,
-                           "bonusTime":  4,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸŒ‘",
-                                               "label":  "Silence (Mental Space)",
-                                               "points":  120
-                                           },
-                                           {
-                                               "emoji":  "ðŸ§ ",
-                                               "label":  "Educational/Growth",
-                                               "points":  60
-                                           },
-                                           {
-                                               "emoji":  "ðŸŽµ",
-                                               "label":  "Lofi/Focus Music",
-                                               "points":  30
-                                           },
-                                           {
-                                               "emoji":  "ðŸ”Š",
-                                               "label":  "Hype/Loud/Brain-rot",
-                                               "points":  -2
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_12",
-                           "emoji":  "ðŸ‘Ÿ",
-                           "title":  "Footwear State",
-                           "subtitle":  "Look at your shoes/feet right now.",
-                           "time":  11,
-                           "bonusTime":  4,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸ‘ž",
-                                               "label":  "Clean/Polished/Intentional",
-                                               "points":  75
-                                           },
-                                           {
-                                               "emoji":  "ðŸ‘Ÿ",
-                                               "label":  "Casual/Sneakers",
-                                               "points":  30
-                                           },
-                                           {
-                                               "emoji":  "ðŸ§¦",
-                                               "label":  "Socks/Barefoot",
-                                               "points":  15
-                                           },
-                                           {
-                                               "emoji":  "ðŸšï¸",
-                                               "label":  "Dirty/Beat-up shoes",
-                                               "points":  -9
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_13",
-                           "emoji":  "ðŸ“…",
-                           "title":  "The To-Do Debt",
-                           "subtitle":  "How many tasks did you move from yesterday to today?",
-                           "time":  11,
-                           "bonusTime":  4,
-                           "ordered":  true,
-                           "options":  [
-                                           {
-                                               "emoji":  "âœ…",
-                                               "label":  "Zero. Plate is clear.",
-                                               "points":  150
-                                           },
-                                           {
-                                               "emoji":  "ðŸ“",
-                                               "label":  "1 - 2 (Standard)",
-                                               "points":  45
-                                           },
-                                           {
-                                               "emoji":  "ðŸ”„",
-                                               "label":  "3 - 5 (Procrastination)",
-                                               "points":  -9
-                                           },
-                                           {
-                                               "emoji":  "ðŸŒ‹",
-                                               "label":  "The whole list moved",
-                                               "points":  -21
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_14",
-                           "emoji":  "ðŸ’¬",
-                           "title":  "The Last Outgoing",
-                           "subtitle":  "Check your last sent text. Does it end with a question mark?",
-                           "time":  14,
-                           "bonusTime":  5,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸ’Ž",
-                                               "label":  "No (A Statement/Fact)",
-                                               "points":  105
-                                           },
-                                           {
-                                               "emoji":  "ðŸ¤",
-                                               "label":  "No (A Directive/Plan)",
-                                               "points":  60
-                                           },
-                                           {
-                                               "emoji":  "â“",
-                                               "label":  "Yes (Seeking response)",
-                                               "points":  -5
-                                           },
-                                           {
-                                               "emoji":  "ðŸ¥º",
-                                               "label":  "Yes (Seeking validation)",
-                                               "points":  -12
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_15",
-                           "emoji":  "ðŸ‘•",
-                           "title":  "The Fabric Test",
-                           "subtitle":  "Are you currently wearing \u0027outside\u0027 clothes or lounge/PJs?",
-                           "time":  10,
-                           "bonusTime":  3,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸ§¥",
-                                               "label":  "Dressed for action (Layers)",
-                                               "points":  90
-                                           },
-                                           {
-                                               "emoji":  "ðŸ‘”",
-                                               "label":  "Professional/Crisp",
-                                               "points":  60
-                                           },
-                                           {
-                                               "emoji":  "ðŸ›‹ï¸",
-                                               "label":  "Sweatpants/Lounge",
-                                               "points":  -7
-                                           },
-                                           {
-                                               "emoji":  "ðŸ›Œ",
-                                               "label":  "Pajamas/Underwear",
-                                               "points":  -18
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_16",
-                           "emoji":  "ðŸ‘ï¸",
-                           "title":  "Screen Time Reality",
-                           "subtitle":  "Is your current daily average screen time higher than 4 hours?",
-                           "time":  14,
-                           "bonusTime":  5,
-                           "ordered":  true,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸ“‰",
-                                               "label":  "No (Under 2 hours)",
-                                               "points":  150
-                                           },
-                                           {
-                                               "emoji":  "âš–ï¸",
-                                               "label":  "No (2 - 4 hours)",
-                                               "points":  75
-                                           },
-                                           {
-                                               "emoji":  "ðŸ“ˆ",
-                                               "label":  "Yes (4 - 7 hours)",
-                                               "points":  -9
-                                           },
-                                           {
-                                               "emoji":  "ðŸ’€",
-                                               "label":  "Yes (8+ hours)",
-                                               "points":  -28
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_17",
-                           "emoji":  "ðŸ’µ",
-                           "title":  "The Physical Wallet",
-                           "subtitle":  "Is your cash/cards organized or just stuffed in a pocket?",
-                           "time":  12,
-                           "bonusTime":  4,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸ’¼",
-                                               "label":  "Slim/Organized/Perfect",
-                                               "points":  60
-                                           },
-                                           {
-                                               "emoji":  "ðŸ›ï¸",
-                                               "label":  "Traditional/Neat",
-                                               "points":  30
-                                           },
-                                           {
-                                               "emoji":  "ðŸŒªï¸",
-                                               "label":  "Messy/Overstuffed",
-                                               "points":  -7
-                                           },
-                                           {
-                                               "emoji":  "ðŸ“‚",
-                                               "label":  "Loose in pockets",
-                                               "points":  -14
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_18",
-                           "emoji":  "ðŸ­",
-                           "title":  "Sugar Consumption",
-                           "subtitle":  "Have you eaten processed sugar or candy today?",
-                           "time":  9,
-                           "bonusTime":  2,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸš«",
-                                               "label":  "No (Clean)",
-                                               "points":  120
-                                           },
-                                           {
-                                               "emoji":  "ðŸŽ",
-                                               "label":  "Only natural sugars (fruit)",
-                                               "points":  60
-                                           },
-                                           {
-                                               "emoji":  "ðŸ¬",
-                                               "label":  "Yes (Minor snack)",
-                                               "points":  -12
-                                           },
-                                           {
-                                               "emoji":  "ðŸ«",
-                                               "label":  "Yes (Heavy binge)",
-                                               "points":  -23
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_19",
-                           "emoji":  "ðŸ•’",
-                           "title":  "The Last Hour",
-                           "subtitle":  "In the last 60 minutes, have you checked your likes/views?",
-                           "time":  10,
-                           "bonusTime":  2,
-                           "ordered":  true,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸ™…",
-                                               "label":  "No (Unbothered)",
-                                               "points":  120
-                                           },
-                                           {
-                                               "emoji":  "ðŸ¤«",
-                                               "label":  "I have notifications off",
-                                               "points":  75
-                                           },
-                                           {
-                                               "emoji":  "ðŸ”„",
-                                               "label":  "Yes, just once",
-                                               "points":  -14
-                                           },
-                                           {
-                                               "emoji":  "ðŸ“±",
-                                               "label":  "Multiple times",
-                                               "points":  -34
-                                           }
-                                       ]
-                       },
-                       {
-                           "id":  "M_20",
-                           "emoji":  "ðŸ§˜",
-                           "title":  "The Calm Pulse",
-                           "subtitle":  "Check your heart rate/breathing right now.",
-                           "time":  11,
-                           "bonusTime":  4,
-                           "options":  [
-                                           {
-                                               "emoji":  "ðŸŒŠ",
-                                               "label":  "Deep and slow (The Ocean)",
-                                               "points":  135
-                                           },
-                                           {
-                                               "emoji":  "ðŸ§Š",
-                                               "label":  "Controlled (The Mountain)",
-                                               "points":  90
-                                           },
-                                           {
-                                               "emoji":  "âš¡",
-                                               "label":  "Slightly elevated",
-                                               "points":  -5
-                                           },
-                                           {
-                                               "emoji":  "ðŸŒªï¸",
-                                               "label":  "Rapid/Anxious/Shallow",
-                                               "points":  -18
-                                           }
-                                       ]
-                       }
-                   ],
-    "hypothetical":  [
-                         {
-                             "id":  "H_01",
-                             "emoji":  "ðŸŒ‘",
-                             "title":  "The Elevator Mirror",
-                             "subtitle":  "You are alone in an elevator with a mirror. You look at:",
-                             "time":  7,
-                             "bonusTime":  1.5,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸ‘ï¸",
-                                                 "label":  "Directly into my own eyes",
-                                                 "points":  120
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ“",
-                                                 "label":  "The corners of the ceiling",
-                                                 "points":  60
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ‘ž",
-                                                 "label":  "The scuffs on my shoes",
-                                                 "points":  -5
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ“±",
-                                                 "label":  "The reflection of my phone",
-                                                 "points":  -12
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_02",
-                             "emoji":  "ðŸŒŠ",
-                             "title":  "The Roomâ€™s Volume",
-                             "subtitle":  "When you walk into a silent room, you feel like:",
-                             "time":  6,
-                             "bonusTime":  2,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸŽ¼",
-                                                 "label":  "The silence is waiting for me",
-                                                 "points":  135
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ§Š",
-                                                 "label":  "The silence is a tool I use",
-                                                 "points":  90
-                                             },
-                                             {
-                                                 "emoji":  "ðŸšª",
-                                                 "label":  "I am interrupting the silence",
-                                                 "points":  -9
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ‘»",
-                                                 "label":  "I am trying to be invisible",
-                                                 "points":  -16
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_03",
-                             "emoji":  "ðŸ•¯ï¸",
-                             "title":  "The Dead Joke",
-                             "subtitle":  "Someone tells a joke that isn\u0027t funny. Your face is:",
-                             "time":  5,
-                             "bonusTime":  1.5,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸ˜",
-                                                 "label":  "Neutral and still",
-                                                 "points":  150
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ¤”",
-                                                 "label":  "Questioning/Confused",
-                                                 "points":  75
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ˜…",
-                                                 "label":  "Politely smiling",
-                                                 "points":  -16
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ¤¡",
-                                                 "label":  "Laughing along anyway",
-                                                 "points":  -34
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_04",
-                             "emoji":  "ðŸ™ï¸",
-                             "title":  "The City Intersection",
-                             "subtitle":  "Waiting for a walk signal in a crowd, you are:",
-                             "time":  6,
-                             "bonusTime":  2,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸ§˜",
-                                                 "label":  "A statue in the storm",
-                                                 "points":  105
-                                             },
-                                             {
-                                                 "emoji":  "ðŸŒªï¸",
-                                                 "label":  "A ghost moving through gaps",
-                                                 "points":  60
-                                             },
-                                             {
-                                                 "emoji":  "âŒš",
-                                                 "label":  "Checking the timer/light",
-                                                 "points":  -7
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ“±",
-                                                 "label":  "Staring at my screen",
-                                                 "points":  -18
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_05",
-                             "emoji":  "ðŸ¦…",
-                             "title":  "The Strangerâ€™s Gaze",
-                             "subtitle":  "You lock eyes with a stranger. Your instinct is to:",
-                             "time":  6,
-                             "bonusTime":  1,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸ’Ž",
-                                                 "label":  "Hold until they blink",
-                                                 "points":  180
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ™‚",
-                                                 "label":  "Nod and keep moving",
-                                                 "points":  75
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ‘‡",
-                                                 "label":  "Instantly look down",
-                                                 "points":  -34
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ¤³",
-                                                 "label":  "Pretend to look at phone",
-                                                 "points":  -46
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_06",
-                             "emoji":  "ðŸ¥ƒ",
-                             "title":  "The Spilled Drink",
-                             "subtitle":  "Someone knocks over a glass at your table. You:",
-                             "time":  6,
-                             "bonusTime":  2,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸ§Š",
-                                                 "label":  "Don\u0027t move; watch it",
-                                                 "points":  165
-                                             },
-                                             {
-                                                 "emoji":  "âš¡",
-                                                 "label":  "Spring into action",
-                                                 "points":  60
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ˜±",
-                                                 "label":  "React verbally (\u0027Oh!\u0027)",
-                                                 "points":  -21
-                                             },
-                                             {
-                                                 "emoji":  "ðŸƒ",
-                                                 "label":  "Jump back to stay dry",
-                                                 "points":  -28
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_07",
-                             "emoji":  "ðŸŽ¨",
-                             "title":  "The Weekâ€™s Texture",
-                             "subtitle":  "If your last 7 days had a texture, it would be:",
-                             "time":  7,
-                             "bonusTime":  2,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸ’Ž",
-                                                 "label":  "Polished Chrome (Precision)",
-                                                 "points":  120
-                                             },
-                                             {
-                                                 "emoji":  "ðŸŒ‹",
-                                                 "label":  "Jagged Rock (Friction)",
-                                                 "points":  30
-                                             },
-                                             {
-                                                 "emoji":  "ðŸŒ«ï¸",
-                                                 "label":  "Blurred Fog (Indistinct)",
-                                                 "points":  -14
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ« ",
-                                                 "label":  "Melting Sludge",
-                                                 "points":  -34
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_08",
-                             "emoji":  "ðŸ›‹ï¸",
-                             "title":  "The 15-Minute Void",
-                             "subtitle":  "How does sitting in a dark room with zero tech feel?",
-                             "time":  6,
-                             "bonusTime":  2,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸ§˜",
-                                                 "label":  "Necessary and peaceful",
-                                                 "points":  120
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ§ ",
-                                                 "label":  "Exciting; my ideas flow",
-                                                 "points":  60
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ“»",
-                                                 "label":  "Boring; I need sound",
-                                                 "points":  -5
-                                             },
-                                             {
-                                                 "emoji":  "ðŸŒªï¸",
-                                                 "label":  "Unbearable/Agitating",
-                                                 "points":  -18
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_09",
-                             "emoji":  "ðŸ’¬",
-                             "title":  "The Paragraph Text",
-                             "subtitle":  "Someone sends you a long, angry text. Your reply is:",
-                             "time":  6,
-                             "bonusTime":  1.5,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸ‘ï¸",
-                                                 "label":  "Left on read (Processing)",
-                                                 "points":  120
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ‘",
-                                                 "label":  "A single, cold sentence",
-                                                 "points":  90
-                                             },
-                                             {
-                                                 "emoji":  "âœï¸",
-                                                 "label":  "An equal length response",
-                                                 "points":  -23
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ“ž",
-                                                 "label":  "Call them immediately",
-                                                 "points":  30
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_10",
-                             "emoji":  "ðŸ…",
-                             "title":  "The Animal Archetype",
-                             "subtitle":  "In a social jungle, you are currently:",
-                             "time":  5,
-                             "bonusTime":  1,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸ¦…",
-                                                 "label":  "The Eagle (Watching)",
-                                                 "points":  105
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ",
-                                                 "label":  "The Snake (Moving unseen)",
-                                                 "points":  75
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ¦Œ",
-                                                 "label":  "The Deer (Alert/Reacting)",
-                                                 "points":  -23
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ‘",
-                                                 "label":  "The Sheep (Following)",
-                                                 "points":  -41
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_11",
-                             "emoji":  "ðŸ”ï¸",
-                             "title":  "The Hard \u0027No\u0027",
-                             "subtitle":  "If a friend asks for a favor you hate, you say:",
-                             "time":  5,
-                             "bonusTime":  1.5,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸš«",
-                                                 "label":  "\u0027No, I can\u0027t.\u0027 (No excuse)",
-                                                 "points":  165
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ¤·",
-                                                 "label":  "\u0027I\u0027d love to but I\u0027m busy\u0027",
-                                                 "points":  -7
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ¤",
-                                                 "label":  "\u0027Sure...\u0027 (And resent it)",
-                                                 "points":  -18
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ‘»",
-                                                 "label":  "Don\u0027t reply at all",
-                                                 "points":  -34
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_12",
-                             "emoji":  "ðŸ™Š",
-                             "title":  "The Secret Vault",
-                             "subtitle":  "The weight of a massive secret feels:",
-                             "time":  5,
-                             "bonusTime":  1.5,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸ¤",
-                                                 "label":  "Weightless; it dies with me",
-                                                 "points":  150
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ’Ž",
-                                                 "label":  "Powerful; I have leverage",
-                                                 "points":  45
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ“£",
-                                                 "label":  "Like currency I want to spend",
-                                                 "points":  -23
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ¥µ",
-                                                 "label":  "Burning a hole in my mind",
-                                                 "points":  -18
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_13",
-                             "emoji":  "ðŸŽ­",
-                             "title":  "The Public Trip",
-                             "subtitle":  "You trip and fall in a crowded mall. You:",
-                             "time":  6,
-                             "bonusTime":  2,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸ¤«",
-                                                 "label":  "Get up silently and walk",
-                                                 "points":  135
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ˜…",
-                                                 "label":  "Laugh and look for witnesses",
-                                                 "points":  -9
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ˜ ",
-                                                 "label":  "Blame the floor/object",
-                                                 "points":  -18
-                                             },
-                                             {
-                                                 "emoji":  "ðŸƒ",
-                                                 "label":  "Run away in embarrassment",
-                                                 "points":  -46
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_14",
-                             "emoji":  "ðŸ•¯ï¸",
-                             "title":  "The Power Outage",
-                             "subtitle":  "The lights go out suddenly. You feel:",
-                             "time":  5,
-                             "bonusTime":  1,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸŒ‘",
-                                                 "label":  "Calm; I know the room",
-                                                 "points":  120
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ”¦",
-                                                 "label":  "Need for a light source",
-                                                 "points":  15
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ›‘",
-                                                 "label":  "Frozen/Startled",
-                                                 "points":  -14
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ˜±",
-                                                 "label":  "Genuine fear",
-                                                 "points":  -28
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_15",
-                             "emoji":  "ðŸš¶",
-                             "title":  "The Pace Maker",
-                             "subtitle":  "Walking with a friend, the walking speed is set by:",
-                             "time":  5,
-                             "bonusTime":  2,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸ‘‘",
-                                                 "label":  "Me (They keep up)",
-                                                 "points":  105
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ”„",
-                                                 "label":  "Natural synchronization",
-                                                 "points":  60
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ‘£",
-                                                 "label":  "Them (I keep up)",
-                                                 "points":  -12
-                                             },
-                                             {
-                                                 "emoji":  "ðŸŒ",
-                                                 "label":  "We both keep slowing down",
-                                                 "points":  -21
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_16",
-                             "emoji":  "ðŸ¯",
-                             "title":  "The Predator Hunt",
-                             "subtitle":  "Watching a documentary, you identify with:",
-                             "time":  5,
-                             "bonusTime":  1,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸ…",
-                                                 "label":  "The Predator",
-                                                 "points":  90
-                                             },
-                                             {
-                                                 "emoji":  "ðŸŽ¥",
-                                                 "label":  "The Cameraman (Observer)",
-                                                 "points":  120
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ¦Œ",
-                                                 "label":  "The Prey",
-                                                 "points":  -28
-                                             },
-                                             {
-                                                 "emoji":  "ðŸŒ³",
-                                                 "label":  "The Landscape",
-                                                 "points":  30
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_17",
-                             "emoji":  "ðŸ“ž",
-                             "title":  "The Unknown Caller",
-                             "subtitle":  "A random number calls. Your immediate vibe is:",
-                             "time":  5,
-                             "bonusTime":  1,
-                             "options":  [
-                                             {
-                                                 "emoji":  "âš”ï¸",
-                                                 "label":  "Challenge (Who is this?)",
-                                                 "points":  60
-                                             },
-                                             {
-                                                 "emoji":  "ðŸŒ«ï¸",
-                                                 "label":  "Indifference (VM)",
-                                                 "points":  120
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ›¡ï¸",
-                                                 "label":  "Avoidant (Not today)",
-                                                 "points":  -7
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ˜°",
-                                                 "label":  "Anxious (Is it a bill?)",
-                                                 "points":  -21
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_18",
-                             "emoji":  "ðŸ…",
-                             "title":  "The Silent Win",
-                             "subtitle":  "A massive accomplishment that nobody knows about is:",
-                             "time":  6,
-                             "bonusTime":  2,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸ¤«",
-                                                 "label":  "More satisfying/Silent Aura",
-                                                 "points":  165
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ“£",
-                                                 "label":  "Frustrating; I want credit",
-                                                 "points":  -9
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ“¸",
-                                                 "label":  "Pointless if not posted",
-                                                 "points":  -34
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ¤",
-                                                 "label":  "Something I\u0027ll tell later",
-                                                 "points":  45
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_19",
-                             "emoji":  "ðŸ“–",
-                             "title":  "The Random Page",
-                             "subtitle":  "Opening a new book, you read:",
-                             "time":  5,
-                             "bonusTime":  1,
-                             "options":  [
-                                             {
-                                                 "emoji":  "ðŸ",
-                                                 "label":  "The first sentence",
-                                                 "points":  60
-                                             },
-                                             {
-                                                 "emoji":  "ðŸŽ²",
-                                                 "label":  "A random middle sentence",
-                                                 "points":  105
-                                             },
-                                             {
-                                                 "emoji":  "ðŸ“–",
-                                                 "label":  "The back cover blurb",
-                                                 "points":  15
-                                             },
-                                             {
-                                                 "emoji":  "ðŸŽŒ",
-                                                 "label":  "The very last page",
-                                                 "points":  75
-                                             }
-                                         ]
-                         },
-                         {
-                             "id":  "H_20",
-                             "emoji":  "ðŸ‘‘",
-                             "title":  "The Final Thought",
-                             "subtitle":  "If you vanished now, your \u0027Aura\u0027 would be:",
-                             "time":  4,
-                             "bonusTime":  1,
-                             "options":  [
-                                             {
-                                                 "emoji":  "â˜€ï¸",
-                                                 "label":  "A Sun (Presence)",
-                                                 "points":  225
-                                             },
-                                             {
-                                                 "emoji":  "ðŸŒ‘",
-                                                 "label":  "A Void (Weight/Mystery)",
-                                                 "points":  75
-                                             },
-                                             {
-                                                 "emoji":  "ðŸŒ«ï¸",
-                                                 "label":  "A Cloud (Forgotten)",
-                                                 "points":  -23
-                                             },
-                                             {
-                                                 "emoji":  "ðŸŒªï¸",
-                                                 "label":  "A Storm (Regret)",
-                                                 "points":  -46
-                                             }
-                                         ]
-                         }
-                     ]
+  "measurable": [
+    {
+      "id": "M_01",
+      "emoji": "📱",
+      "title": "The Dock Check",
+      "subtitle": "Look at the very first app on your phone's bottom dock right now.",
+      "time": 12,
+      "bonusTime": 4,
+      "options": [
+        {
+          "emoji": "🛠️",
+          "label": "A Utility (Notes, Calendar, Camera)",
+          "points": 90
+        },
+        {
+          "emoji": "💬",
+          "label": "Communication (Messages, WhatsApp)",
+          "points": 30
+        },
+        {
+          "emoji": "🎢",
+          "label": "A Dopamine App (IG, TikTok, X)",
+          "points": -18
+        },
+        {
+          "emoji": "🎮",
+          "label": "A Game / Entertainment",
+          "points": -12
+        }
+      ]
+    },
+    {
+      "id": "M_02",
+      "emoji": "🔔",
+      "title": "Notification Debt",
+      "subtitle": "How many unread notifications are on your lock screen/icons right now?",
+      "time": 10,
+      "bonusTime": 3,
+      "ordered": true,
+      "options": [
+        {
+          "emoji": "🧹",
+          "label": "0 - 5 (Total Control)",
+          "points": 120
+        },
+        {
+          "emoji": "📈",
+          "label": "6 - 20 (Slight Debt)",
+          "points": 30
+        },
+        {
+          "emoji": "🌊",
+          "label": "21 - 99 (Mental Chaos)",
+          "points": -9
+        },
+        {
+          "emoji": "💀",
+          "label": "99+ (The Void)",
+          "points": -23
+        }
+      ]
+    },
+    {
+      "id": "M_03",
+      "emoji": "🔋",
+      "title": "The Battery Reality",
+      "subtitle": "What is your current battery percentage?",
+      "time": 9,
+      "bonusTime": 3,
+      "ordered": true,
+      "options": [
+        {
+          "emoji": "⚡",
+          "label": "80% - 100% (Prepared)",
+          "points": 75
+        },
+        {
+          "emoji": "⚖️",
+          "label": "50% - 79% (Stable)",
+          "points": 30
+        },
+        {
+          "emoji": "⚠️",
+          "label": "21% - 49% (Declining)",
+          "points": -2
+        },
+        {
+          "emoji": "🪫",
+          "label": "Under 20% (Chaos)",
+          "points": -14
+        }
+      ]
+    },
+    {
+      "id": "M_04",
+      "emoji": "🦒",
+      "title": "The Posture Scan",
+      "subtitle": "Without moving, look at your neck/back in a mirror or front camera reflection.",
+      "time": 14,
+      "bonusTime": 5,
+      "options": [
+        {
+          "emoji": "🦒",
+          "label": "Stacked and tall",
+          "points": 90
+        },
+        {
+          "emoji": "🐢",
+          "label": "Slight forward lean",
+          "points": -5
+        },
+        {
+          "emoji": "🦐",
+          "label": "Full shrimp/Tech-neck",
+          "points": -18
+        },
+        {
+          "emoji": "🛋️",
+          "label": "Slumped/Lying down",
+          "points": -9
+        }
+      ]
+    },
+    {
+      "id": "M_05",
+      "emoji": "🌅",
+      "title": "The Morning Pivot",
+      "subtitle": "Did you scroll social media within 10 minutes of waking up today?",
+      "time": 10,
+      "bonusTime": 3,
+      "options": [
+        {
+          "emoji": "🚫",
+          "label": "No, I stayed offline",
+          "points": 150
+        },
+        {
+          "emoji": "☕",
+          "label": "Only for specific info (weather/news)",
+          "points": 45
+        },
+        {
+          "emoji": "🤳",
+          "label": "Yes, I checked the feed",
+          "points": -16
+        },
+        {
+          "emoji": "🔁",
+          "label": "It was the first thing I did",
+          "points": -28
+        }
+      ]
+    },
+    {
+      "id": "M_06",
+      "emoji": "🧹",
+      "title": "The Immediate Radius",
+      "subtitle": "Look at the surface you are currently sitting at (desk/table).",
+      "time": 12,
+      "bonusTime": 4,
+      "options": [
+        {
+          "emoji": "✨",
+          "label": "Clear and intentional",
+          "points": 75
+        },
+        {
+          "emoji": "📦",
+          "label": "Functional clutter",
+          "points": 15
+        },
+        {
+          "emoji": "🗑️",
+          "label": "Messy/Unorganized",
+          "points": -9
+        },
+        {
+          "emoji": "🌋",
+          "label": "A total wreck",
+          "points": -18
+        }
+      ]
+    },
+    {
+      "id": "M_07",
+      "emoji": "🧠",
+      "title": "The Tab Count",
+      "subtitle": "How many browser tabs or background apps do you have open right now?",
+      "time": 12,
+      "bonusTime": 4,
+      "ordered": true,
+      "options": [
+        {
+          "emoji": "🎯",
+          "label": "1 - 3 (Focused)",
+          "points": 105
+        },
+        {
+          "emoji": "📚",
+          "label": "4 - 10 (Busy)",
+          "points": 30
+        },
+        {
+          "emoji": "📂",
+          "label": "11 - 30 (Scattered)",
+          "points": -7
+        },
+        {
+          "emoji": "🌋",
+          "label": "I can't even see the icons",
+          "points": -16
+        }
+      ]
+    },
+    {
+      "id": "M_08",
+      "emoji": "🚭",
+      "title": "The Air Quality",
+      "subtitle": "Have you used a vape or nicotine product in the last 24 hours?",
+      "time": 10,
+      "bonusTime": 3,
+      "options": [
+        {
+          "emoji": "💎",
+          "label": "No (Clean Lungs)",
+          "points": 150
+        },
+        {
+          "emoji": "🌬️",
+          "label": "Socially only",
+          "points": -7
+        },
+        {
+          "emoji": "💨",
+          "label": "Yes (The flavored air won)",
+          "points": -34
+        },
+        {
+          "emoji": "⛓️",
+          "label": "Multiple times already",
+          "points": -58
+        }
+      ]
+    },
+    {
+      "id": "M_09",
+      "emoji": "🔞",
+      "title": "The Retainment Check",
+      "subtitle": "Have you consumed adult content in the last 48 hours?",
+      "time": 10,
+      "bonusTime": 2,
+      "options": [
+        {
+          "emoji": "🔋",
+          "label": "No (Retaining Energy)",
+          "points": 180
+        },
+        {
+          "emoji": "⚖️",
+          "label": "No (But I thought about it)",
+          "points": 60
+        },
+        {
+          "emoji": "🪫",
+          "label": "Yes (Folded once)",
+          "points": -28
+        },
+        {
+          "emoji": "🏚️",
+          "label": "Yes (It's a habit)",
+          "points": -69
+        }
+      ]
+    },
+    {
+      "id": "M_10",
+      "emoji": "💧",
+      "title": "Hydration Status",
+      "subtitle": "How much plain water have you drank today?",
+      "time": 9,
+      "bonusTime": 3,
+      "ordered": true,
+      "options": [
+        {
+          "emoji": "🌊",
+          "label": "Over 2 Liters (Peak)",
+          "points": 120
+        },
+        {
+          "emoji": "🥤",
+          "label": "1 Liter (Standard)",
+          "points": 60
+        },
+        {
+          "emoji": "🥃",
+          "label": "One glass/bottle",
+          "points": 15
+        },
+        {
+          "emoji": "🏜️",
+          "label": "None (Caffeine only)",
+          "points": -12
+        }
+      ]
+    },
+    {
+      "id": "M_11",
+      "emoji": "🎧",
+      "title": "The Sonic Vibe",
+      "subtitle": "What type of audio are you listening to (or did you last)?",
+      "time": 10,
+      "bonusTime": 4,
+      "options": [
+        {
+          "emoji": "🌑",
+          "label": "Silence (Mental Space)",
+          "points": 120
+        },
+        {
+          "emoji": "🧠",
+          "label": "Educational/Growth",
+          "points": 60
+        },
+        {
+          "emoji": "🎵",
+          "label": "Lofi/Focus Music",
+          "points": 30
+        },
+        {
+          "emoji": "🔊",
+          "label": "Hype/Loud/Brain-rot",
+          "points": -2
+        }
+      ]
+    },
+    {
+      "id": "M_12",
+      "emoji": "👟",
+      "title": "Footwear State",
+      "subtitle": "Look at your shoes/feet right now.",
+      "time": 11,
+      "bonusTime": 4,
+      "options": [
+        {
+          "emoji": "👞",
+          "label": "Clean/Polished/Intentional",
+          "points": 75
+        },
+        {
+          "emoji": "👟",
+          "label": "Casual/Sneakers",
+          "points": 30
+        },
+        {
+          "emoji": "🧦",
+          "label": "Socks/Barefoot",
+          "points": 15
+        },
+        {
+          "emoji": "🏚️",
+          "label": "Dirty/Beat-up shoes",
+          "points": -9
+        }
+      ]
+    },
+    {
+      "id": "M_13",
+      "emoji": "📅",
+      "title": "The To-Do Debt",
+      "subtitle": "How many tasks did you move from yesterday to today?",
+      "time": 11,
+      "bonusTime": 4,
+      "ordered": true,
+      "options": [
+        {
+          "emoji": "✅",
+          "label": "Zero. Plate is clear.",
+          "points": 150
+        },
+        {
+          "emoji": "📝",
+          "label": "1 - 2 (Standard)",
+          "points": 45
+        },
+        {
+          "emoji": "🔄",
+          "label": "3 - 5 (Procrastination)",
+          "points": -9
+        },
+        {
+          "emoji": "🌋",
+          "label": "The whole list moved",
+          "points": -21
+        }
+      ]
+    },
+    {
+      "id": "M_14",
+      "emoji": "💬",
+      "title": "The Last Outgoing",
+      "subtitle": "Check your last sent text. Does it end with a question mark?",
+      "time": 14,
+      "bonusTime": 5,
+      "options": [
+        {
+          "emoji": "💎",
+          "label": "No (A Statement/Fact)",
+          "points": 105
+        },
+        {
+          "emoji": "🤝",
+          "label": "No (A Directive/Plan)",
+          "points": 60
+        },
+        {
+          "emoji": "❓",
+          "label": "Yes (Seeking response)",
+          "points": -5
+        },
+        {
+          "emoji": "🥺",
+          "label": "Yes (Seeking validation)",
+          "points": -12
+        }
+      ]
+    },
+    {
+      "id": "M_15",
+      "emoji": "👕",
+      "title": "The Fabric Test",
+      "subtitle": "Are you currently wearing 'outside' clothes or lounge/PJs?",
+      "time": 10,
+      "bonusTime": 3,
+      "options": [
+        {
+          "emoji": "🧥",
+          "label": "Dressed for action (Layers)",
+          "points": 90
+        },
+        {
+          "emoji": "👔",
+          "label": "Professional/Crisp",
+          "points": 60
+        },
+        {
+          "emoji": "🛋️",
+          "label": "Sweatpants/Lounge",
+          "points": -7
+        },
+        {
+          "emoji": "🛌",
+          "label": "Pajamas/Underwear",
+          "points": -18
+        }
+      ]
+    },
+    {
+      "id": "M_16",
+      "emoji": "👁️",
+      "title": "Screen Time Reality",
+      "subtitle": "Is your current daily average screen time higher than 4 hours?",
+      "time": 14,
+      "bonusTime": 5,
+      "ordered": true,
+      "options": [
+        {
+          "emoji": "📉",
+          "label": "No (Under 2 hours)",
+          "points": 150
+        },
+        {
+          "emoji": "⚖️",
+          "label": "No (2 - 4 hours)",
+          "points": 75
+        },
+        {
+          "emoji": "📈",
+          "label": "Yes (4 - 7 hours)",
+          "points": -9
+        },
+        {
+          "emoji": "💀",
+          "label": "Yes (8+ hours)",
+          "points": -28
+        }
+      ]
+    },
+    {
+      "id": "M_17",
+      "emoji": "💵",
+      "title": "The Physical Wallet",
+      "subtitle": "Is your cash/cards organized or just stuffed in a pocket?",
+      "time": 12,
+      "bonusTime": 4,
+      "options": [
+        {
+          "emoji": "💼",
+          "label": "Slim/Organized/Perfect",
+          "points": 60
+        },
+        {
+          "emoji": "🏛️",
+          "label": "Traditional/Neat",
+          "points": 30
+        },
+        {
+          "emoji": "🌪️",
+          "label": "Messy/Overstuffed",
+          "points": -7
+        },
+        {
+          "emoji": "📂",
+          "label": "Loose in pockets",
+          "points": -14
+        }
+      ]
+    },
+    {
+      "id": "M_18",
+      "emoji": "🍭",
+      "title": "Sugar Consumption",
+      "subtitle": "Have you eaten processed sugar or candy today?",
+      "time": 9,
+      "bonusTime": 2,
+      "options": [
+        {
+          "emoji": "🚫",
+          "label": "No (Clean)",
+          "points": 120
+        },
+        {
+          "emoji": "🍎",
+          "label": "Only natural sugars (fruit)",
+          "points": 60
+        },
+        {
+          "emoji": "🍬",
+          "label": "Yes (Minor snack)",
+          "points": -12
+        },
+        {
+          "emoji": "🍫",
+          "label": "Yes (Heavy binge)",
+          "points": -23
+        }
+      ]
+    },
+    {
+      "id": "M_19",
+      "emoji": "🕒",
+      "title": "The Last Hour",
+      "subtitle": "In the last 60 minutes, have you checked your likes/views?",
+      "time": 10,
+      "bonusTime": 2,
+      "ordered": true,
+      "options": [
+        {
+          "emoji": "🙅",
+          "label": "No (Unbothered)",
+          "points": 120
+        },
+        {
+          "emoji": "🤫",
+          "label": "I have notifications off",
+          "points": 75
+        },
+        {
+          "emoji": "🔄",
+          "label": "Yes, just once",
+          "points": -14
+        },
+        {
+          "emoji": "📱",
+          "label": "Multiple times",
+          "points": -34
+        }
+      ]
+    },
+    {
+      "id": "M_20",
+      "emoji": "🧘",
+      "title": "The Calm Pulse",
+      "subtitle": "Check your heart rate/breathing right now.",
+      "time": 11,
+      "bonusTime": 4,
+      "options": [
+        {
+          "emoji": "🌊",
+          "label": "Deep and slow (The Ocean)",
+          "points": 135
+        },
+        {
+          "emoji": "🧊",
+          "label": "Controlled (The Mountain)",
+          "points": 90
+        },
+        {
+          "emoji": "⚡",
+          "label": "Slightly elevated",
+          "points": -5
+        },
+        {
+          "emoji": "🌪️",
+          "label": "Rapid/Anxious/Shallow",
+          "points": -18
+        }
+      ]
+    }
+  ],
+  "hypothetical": [
+    {
+      "id": "H_01",
+      "emoji": "🌑",
+      "title": "The Elevator Mirror",
+      "subtitle": "You are alone in an elevator with a mirror. You look at:",
+      "time": 7,
+      "bonusTime": 1.5,
+      "options": [
+        {
+          "emoji": "👁️",
+          "label": "Directly into my own eyes",
+          "points": 120
+        },
+        {
+          "emoji": "📐",
+          "label": "The corners of the ceiling",
+          "points": 60
+        },
+        {
+          "emoji": "👞",
+          "label": "The scuffs on my shoes",
+          "points": -5
+        },
+        {
+          "emoji": "📱",
+          "label": "The reflection of my phone",
+          "points": -12
+        }
+      ]
+    },
+    {
+      "id": "H_02",
+      "emoji": "🌊",
+      "title": "The Room's Volume",
+      "subtitle": "When you walk into a silent room, you feel like:",
+      "time": 6,
+      "bonusTime": 2,
+      "options": [
+        {
+          "emoji": "🎼",
+          "label": "The silence is waiting for me",
+          "points": 135
+        },
+        {
+          "emoji": "🧊",
+          "label": "The silence is a tool I use",
+          "points": 90
+        },
+        {
+          "emoji": "🚪",
+          "label": "I am interrupting the silence",
+          "points": -9
+        },
+        {
+          "emoji": "👻",
+          "label": "I am trying to be invisible",
+          "points": -16
+        }
+      ]
+    },
+    {
+      "id": "H_03",
+      "emoji": "🕯️",
+      "title": "The Dead Joke",
+      "subtitle": "Someone tells a joke that isn't funny. Your face is:",
+      "time": 5,
+      "bonusTime": 1.5,
+      "options": [
+        {
+          "emoji": "😐",
+          "label": "Neutral and still",
+          "points": 150
+        },
+        {
+          "emoji": "🤔",
+          "label": "Questioning/Confused",
+          "points": 75
+        },
+        {
+          "emoji": "😅",
+          "label": "Politely smiling",
+          "points": -16
+        },
+        {
+          "emoji": "🤡",
+          "label": "Laughing along anyway",
+          "points": -34
+        }
+      ]
+    },
+    {
+      "id": "H_04",
+      "emoji": "🏙️",
+      "title": "The City Intersection",
+      "subtitle": "Waiting for a walk signal in a crowd, you are:",
+      "time": 6,
+      "bonusTime": 2,
+      "options": [
+        {
+          "emoji": "🧘",
+          "label": "A statue in the storm",
+          "points": 105
+        },
+        {
+          "emoji": "🌪️",
+          "label": "A ghost moving through gaps",
+          "points": 60
+        },
+        {
+          "emoji": "⌚",
+          "label": "Checking the timer/light",
+          "points": -7
+        },
+        {
+          "emoji": "📱",
+          "label": "Staring at my screen",
+          "points": -18
+        }
+      ]
+    },
+    {
+      "id": "H_05",
+      "emoji": "🦅",
+      "title": "The Stranger's Gaze",
+      "subtitle": "You lock eyes with a stranger. Your instinct is to:",
+      "time": 6,
+      "bonusTime": 1,
+      "options": [
+        {
+          "emoji": "💎",
+          "label": "Hold until they blink",
+          "points": 180
+        },
+        {
+          "emoji": "🙂",
+          "label": "Nod and keep moving",
+          "points": 75
+        },
+        {
+          "emoji": "👇",
+          "label": "Instantly look down",
+          "points": -34
+        },
+        {
+          "emoji": "🤳",
+          "label": "Pretend to look at phone",
+          "points": -46
+        }
+      ]
+    },
+    {
+      "id": "H_06",
+      "emoji": "🥃",
+      "title": "The Spilled Drink",
+      "subtitle": "Someone knocks over a glass at your table. You:",
+      "time": 6,
+      "bonusTime": 2,
+      "options": [
+        {
+          "emoji": "🧊",
+          "label": "Don't move; watch it",
+          "points": 165
+        },
+        {
+          "emoji": "⚡",
+          "label": "Spring into action",
+          "points": 60
+        },
+        {
+          "emoji": "😱",
+          "label": "React verbally ('Oh!')",
+          "points": -21
+        },
+        {
+          "emoji": "🏃",
+          "label": "Jump back to stay dry",
+          "points": -28
+        }
+      ]
+    },
+    {
+      "id": "H_07",
+      "emoji": "🎨",
+      "title": "The Week's Texture",
+      "subtitle": "If your last 7 days had a texture, it would be:",
+      "time": 7,
+      "bonusTime": 2,
+      "options": [
+        {
+          "emoji": "💎",
+          "label": "Polished Chrome (Precision)",
+          "points": 120
+        },
+        {
+          "emoji": "🌋",
+          "label": "Jagged Rock (Friction)",
+          "points": 30
+        },
+        {
+          "emoji": "🌫️",
+          "label": "Blurred Fog (Indistinct)",
+          "points": -14
+        },
+        {
+          "emoji": "🫠",
+          "label": "Melting Sludge",
+          "points": -34
+        }
+      ]
+    },
+    {
+      "id": "H_08",
+      "emoji": "🛋️",
+      "title": "The 15-Minute Void",
+      "subtitle": "How does sitting in a dark room with zero tech feel?",
+      "time": 6,
+      "bonusTime": 2,
+      "options": [
+        {
+          "emoji": "🧘",
+          "label": "Necessary and peaceful",
+          "points": 120
+        },
+        {
+          "emoji": "🧠",
+          "label": "Exciting; my ideas flow",
+          "points": 60
+        },
+        {
+          "emoji": "📻",
+          "label": "Boring; I need sound",
+          "points": -5
+        },
+        {
+          "emoji": "🌪️",
+          "label": "Unbearable/Agitating",
+          "points": -18
+        }
+      ]
+    },
+    {
+      "id": "H_09",
+      "emoji": "💬",
+      "title": "The Paragraph Text",
+      "subtitle": "Someone sends you a long, angry text. Your reply is:",
+      "time": 6,
+      "bonusTime": 1.5,
+      "options": [
+        {
+          "emoji": "👁️",
+          "label": "Left on read (Processing)",
+          "points": 120
+        },
+        {
+          "emoji": "👍",
+          "label": "A single, cold sentence",
+          "points": 90
+        },
+        {
+          "emoji": "✍️",
+          "label": "An equal length response",
+          "points": -23
+        },
+        {
+          "emoji": "📞",
+          "label": "Call them immediately",
+          "points": 30
+        }
+      ]
+    },
+    {
+      "id": "H_10",
+      "emoji": "🐅",
+      "title": "The Animal Archetype",
+      "subtitle": "In a social jungle, you are currently:",
+      "time": 5,
+      "bonusTime": 1,
+      "options": [
+        {
+          "emoji": "🦅",
+          "label": "The Eagle (Watching)",
+          "points": 105
+        },
+        {
+          "emoji": "🐍",
+          "label": "The Snake (Moving unseen)",
+          "points": 75
+        },
+        {
+          "emoji": "🦌",
+          "label": "The Deer (Alert/Reacting)",
+          "points": -23
+        },
+        {
+          "emoji": "🐑",
+          "label": "The Sheep (Following)",
+          "points": -41
+        }
+      ]
+    },
+    {
+      "id": "H_11",
+      "emoji": "🏔️",
+      "title": "The Hard 'No'",
+      "subtitle": "If a friend asks for a favor you hate, you say:",
+      "time": 5,
+      "bonusTime": 1.5,
+      "options": [
+        {
+          "emoji": "🚫",
+          "label": "'No, I can't.' (No excuse)",
+          "points": 165
+        },
+        {
+          "emoji": "🤷",
+          "label": "'I'd love to but I'm busy'",
+          "points": -7
+        },
+        {
+          "emoji": "🤝",
+          "label": "'Sure...' (And resent it)",
+          "points": -18
+        },
+        {
+          "emoji": "👻",
+          "label": "Don't reply at all",
+          "points": -34
+        }
+      ]
+    },
+    {
+      "id": "H_12",
+      "emoji": "🙊",
+      "title": "The Secret Vault",
+      "subtitle": "The weight of a massive secret feels:",
+      "time": 5,
+      "bonusTime": 1.5,
+      "options": [
+        {
+          "emoji": "🤐",
+          "label": "Weightless; it dies with me",
+          "points": 150
+        },
+        {
+          "emoji": "💎",
+          "label": "Powerful; I have leverage",
+          "points": 45
+        },
+        {
+          "emoji": "📣",
+          "label": "Like currency I want to spend",
+          "points": -23
+        },
+        {
+          "emoji": "🥵",
+          "label": "Burning a hole in my mind",
+          "points": -18
+        }
+      ]
+    },
+    {
+      "id": "H_13",
+      "emoji": "🎭",
+      "title": "The Public Trip",
+      "subtitle": "You trip and fall in a crowded mall. You:",
+      "time": 6,
+      "bonusTime": 2,
+      "options": [
+        {
+          "emoji": "🤫",
+          "label": "Get up silently and walk",
+          "points": 135
+        },
+        {
+          "emoji": "😅",
+          "label": "Laugh and look for witnesses",
+          "points": -9
+        },
+        {
+          "emoji": "😠",
+          "label": "Blame the floor/object",
+          "points": -18
+        },
+        {
+          "emoji": "🏃",
+          "label": "Run away in embarrassment",
+          "points": -46
+        }
+      ]
+    },
+    {
+      "id": "H_14",
+      "emoji": "🕯️",
+      "title": "The Power Outage",
+      "subtitle": "The lights go out suddenly. You feel:",
+      "time": 5,
+      "bonusTime": 1,
+      "options": [
+        {
+          "emoji": "🌑",
+          "label": "Calm; I know the room",
+          "points": 120
+        },
+        {
+          "emoji": "🔦",
+          "label": "Need for a light source",
+          "points": 15
+        },
+        {
+          "emoji": "🛑",
+          "label": "Frozen/Startled",
+          "points": -14
+        },
+        {
+          "emoji": "😱",
+          "label": "Genuine fear",
+          "points": -28
+        }
+      ]
+    },
+    {
+      "id": "H_15",
+      "emoji": "🚶",
+      "title": "The Pace Maker",
+      "subtitle": "Walking with a friend, the walking speed is set by:",
+      "time": 5,
+      "bonusTime": 2,
+      "options": [
+        {
+          "emoji": "👑",
+          "label": "Me (They keep up)",
+          "points": 105
+        },
+        {
+          "emoji": "🔄",
+          "label": "Natural synchronization",
+          "points": 60
+        },
+        {
+          "emoji": "👣",
+          "label": "Them (I keep up)",
+          "points": -12
+        },
+        {
+          "emoji": "🐌",
+          "label": "We both keep slowing down",
+          "points": -21
+        }
+      ]
+    },
+    {
+      "id": "H_16",
+      "emoji": "🐯",
+      "title": "The Predator Hunt",
+      "subtitle": "Watching a documentary, you identify with:",
+      "time": 5,
+      "bonusTime": 1,
+      "options": [
+        {
+          "emoji": "🐅",
+          "label": "The Predator",
+          "points": 90
+        },
+        {
+          "emoji": "🎥",
+          "label": "The Cameraman (Observer)",
+          "points": 120
+        },
+        {
+          "emoji": "🦌",
+          "label": "The Prey",
+          "points": -28
+        },
+        {
+          "emoji": "🌳",
+          "label": "The Landscape",
+          "points": 30
+        }
+      ]
+    },
+    {
+      "id": "H_17",
+      "emoji": "📞",
+      "title": "The Unknown Caller",
+      "subtitle": "A random number calls. Your immediate vibe is:",
+      "time": 5,
+      "bonusTime": 1,
+      "options": [
+        {
+          "emoji": "⚔️",
+          "label": "Challenge (Who is this?)",
+          "points": 60
+        },
+        {
+          "emoji": "🌫️",
+          "label": "Indifference (VM)",
+          "points": 120
+        },
+        {
+          "emoji": "🛡️",
+          "label": "Avoidant (Not today)",
+          "points": -7
+        },
+        {
+          "emoji": "😰",
+          "label": "Anxious (Is it a bill?)",
+          "points": -21
+        }
+      ]
+    },
+    {
+      "id": "H_18",
+      "emoji": "🏅",
+      "title": "The Silent Win",
+      "subtitle": "A massive accomplishment that nobody knows about is:",
+      "time": 6,
+      "bonusTime": 2,
+      "options": [
+        {
+          "emoji": "🤫",
+          "label": "More satisfying/Silent Aura",
+          "points": 165
+        },
+        {
+          "emoji": "📣",
+          "label": "Frustrating; I want credit",
+          "points": -9
+        },
+        {
+          "emoji": "📸",
+          "label": "Pointless if not posted",
+          "points": -34
+        },
+        {
+          "emoji": "🤐",
+          "label": "Something I'll tell later",
+          "points": 45
+        }
+      ]
+    },
+    {
+      "id": "H_19",
+      "emoji": "📖",
+      "title": "The Random Page",
+      "subtitle": "Opening a new book, you read:",
+      "time": 5,
+      "bonusTime": 1,
+      "options": [
+        {
+          "emoji": "🏁",
+          "label": "The first sentence",
+          "points": 60
+        },
+        {
+          "emoji": "🎲",
+          "label": "A random middle sentence",
+          "points": 105
+        },
+        {
+          "emoji": "📖",
+          "label": "The back cover blurb",
+          "points": 15
+        },
+        {
+          "emoji": "🎌",
+          "label": "The very last page",
+          "points": 75
+        }
+      ]
+    },
+    {
+      "id": "H_20",
+      "emoji": "👑",
+      "title": "The Final Thought",
+      "subtitle": "If you vanished now, your 'Aura' would be:",
+      "time": 4,
+      "bonusTime": 1,
+      "options": [
+        {
+          "emoji": "☀️",
+          "label": "A Sun (Presence)",
+          "points": 225
+        },
+        {
+          "emoji": "🌑",
+          "label": "A Void (Weight/Mystery)",
+          "points": 75
+        },
+        {
+          "emoji": "🌫️",
+          "label": "A Cloud (Forgotten)",
+          "points": -23
+        },
+        {
+          "emoji": "🌪️",
+          "label": "A Storm (Regret)",
+          "points": -46
+        }
+      ]
+    }
+  ]
 }
