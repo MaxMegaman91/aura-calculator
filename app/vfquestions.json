@@ -5,7 +5,7 @@
       "emoji": "📱",
       "title": "The Dock Check",
       "subtitle": "Look at the very first app on your phone's bottom dock right now.",
-      "time": 12,
+      "time": 15,
       "bonusTime": 4,
       "options": [
         {
@@ -35,28 +35,28 @@
       "emoji": "🔔",
       "title": "Notification Debt",
       "subtitle": "How many unread notifications are on your lock screen/icons right now?",
-      "time": 10,
+      "time": 12.5,
       "bonusTime": 3,
       "ordered": true,
       "options": [
         {
           "emoji": "🧹",
-          "label": "0 - 5 (Total Control)",
+          "label": "0 - 5",
           "points": 120
         },
         {
           "emoji": "📈",
-          "label": "6 - 20 (Slight Debt)",
+          "label": "6 - 20",
           "points": 30
         },
         {
           "emoji": "🌊",
-          "label": "21 - 99 (Mental Chaos)",
+          "label": "21 - 99",
           "points": -9
         },
         {
           "emoji": "💀",
-          "label": "99+ (The Void)",
+          "label": "99+",
           "points": -23
         }
       ]
@@ -66,28 +66,28 @@
       "emoji": "🔋",
       "title": "The Battery Reality",
       "subtitle": "What is your current battery percentage?",
-      "time": 9,
+      "time": 12,
       "bonusTime": 3,
       "ordered": true,
       "options": [
         {
           "emoji": "⚡",
-          "label": "80% - 100% (Prepared)",
+          "label": "80% - 100%",
           "points": 75
         },
         {
           "emoji": "⚖️",
-          "label": "50% - 79% (Stable)",
+          "label": "50% - 79%",
           "points": 30
         },
         {
           "emoji": "⚠️",
-          "label": "21% - 49% (Declining)",
+          "label": "21% - 49%",
           "points": -2
         },
         {
           "emoji": "🪫",
-          "label": "Under 20% (Chaos)",
+          "label": "Under 20%",
           "points": -14
         }
       ]
@@ -97,7 +97,7 @@
       "emoji": "🦒",
       "title": "The Posture Scan",
       "subtitle": "Without moving, look at your neck/back in a mirror or front camera reflection.",
-      "time": 14,
+      "time": 16,
       "bonusTime": 5,
       "options": [
         {
@@ -127,7 +127,7 @@
       "emoji": "🌅",
       "title": "The Morning Pivot",
       "subtitle": "Did you scroll social media within 10 minutes of waking up today?",
-      "time": 10,
+      "time": 12,
       "bonusTime": 3,
       "options": [
         {
@@ -157,7 +157,7 @@
       "emoji": "🧹",
       "title": "The Immediate Radius",
       "subtitle": "Look at the surface you are currently sitting at (desk/table).",
-      "time": 12,
+      "time": 15,
       "bonusTime": 4,
       "options": [
         {
@@ -187,28 +187,28 @@
       "emoji": "🧠",
       "title": "The Tab Count",
       "subtitle": "How many browser tabs or background apps do you have open right now?",
-      "time": 12,
+      "time": 15,
       "bonusTime": 4,
       "ordered": true,
       "options": [
         {
           "emoji": "🎯",
-          "label": "1 - 3 (Focused)",
+          "label": "1 - 3",
           "points": 105
         },
         {
           "emoji": "📚",
-          "label": "4 - 10 (Busy)",
+          "label": "4 - 10",
           "points": 30
         },
         {
           "emoji": "📂",
-          "label": "11 - 30 (Scattered)",
+          "label": "11 - 30",
           "points": -7
         },
         {
           "emoji": "🌋",
-          "label": "I can't even see the icons",
+          "label": "Too many! (I can't even see the icons)",
           "points": -16
         }
       ]
@@ -218,7 +218,7 @@
       "emoji": "🚭",
       "title": "The Air Quality",
       "subtitle": "Have you used a vape or nicotine product in the last 24 hours?",
-      "time": 10,
+      "time": 12,
       "bonusTime": 3,
       "options": [
         {
@@ -248,7 +248,7 @@
       "emoji": "🔞",
       "title": "The Retainment Check",
       "subtitle": "Have you consumed adult content in the last 48 hours?",
-      "time": 10,
+      "time": 12,
       "bonusTime": 2,
       "options": [
         {
@@ -278,18 +278,18 @@
       "emoji": "💧",
       "title": "Hydration Status",
       "subtitle": "How much plain water have you drank today?",
-      "time": 9,
+      "time": 12,
       "bonusTime": 3,
       "ordered": true,
       "options": [
         {
           "emoji": "🌊",
-          "label": "Over 2 Liters (Peak)",
+          "label": "Over 2 Liters",
           "points": 120
         },
         {
           "emoji": "🥤",
-          "label": "1 Liter (Standard)",
+          "label": "1 Liter",
           "points": 60
         },
         {
@@ -309,12 +309,12 @@
       "emoji": "🎧",
       "title": "The Sonic Vibe",
       "subtitle": "What type of audio are you listening to (or did you last)?",
-      "time": 10,
+      "time": 12.5,
       "bonusTime": 4,
       "options": [
         {
           "emoji": "🌑",
-          "label": "Silence (Mental Space)",
+          "label": "Silence",
           "points": 120
         },
         {
@@ -329,8 +329,8 @@
         },
         {
           "emoji": "🔊",
-          "label": "Hype/Loud/Brain-rot",
-          "points": -2
+          "label": "Hype/Loud",
+          "points": -20
         }
       ]
     },
@@ -339,7 +339,7 @@
       "emoji": "👟",
       "title": "Footwear State",
       "subtitle": "Look at your shoes/feet right now.",
-      "time": 11,
+      "time": 14,
       "bonusTime": 4,
       "options": [
         {
@@ -360,7 +360,7 @@
         {
           "emoji": "🏚️",
           "label": "Dirty/Beat-up shoes",
-          "points": -9
+          "points": -40
         }
       ]
     },
@@ -369,7 +369,7 @@
       "emoji": "📅",
       "title": "The To-Do Debt",
       "subtitle": "How many tasks did you move from yesterday to today?",
-      "time": 11,
+      "time": 14,
       "bonusTime": 4,
       "ordered": true,
       "options": [
@@ -380,18 +380,18 @@
         },
         {
           "emoji": "📝",
-          "label": "1 - 2 (Standard)",
+          "label": "1 - 2",
           "points": 45
         },
         {
           "emoji": "🔄",
-          "label": "3 - 5 (Procrastination)",
-          "points": -9
+          "label": "3 - 5",
+          "points": -40
         },
         {
           "emoji": "🌋",
           "label": "The whole list moved",
-          "points": -21
+          "points": -80
         }
       ]
     },
@@ -399,28 +399,28 @@
       "id": "M_14",
       "emoji": "💬",
       "title": "The Last Outgoing",
-      "subtitle": "Check your last sent text. Does it end with a question mark?",
-      "time": 14,
+      "subtitle": "Check your last sent text. Is it...?",
+      "time": 16,
       "bonusTime": 5,
       "options": [
         {
           "emoji": "💎",
-          "label": "No (A Statement/Fact)",
+          "label": "A Statement/Fact",
           "points": 105
         },
         {
           "emoji": "🤝",
-          "label": "No (A Directive/Plan)",
+          "label": "A Directive/Plan",
           "points": 60
         },
         {
           "emoji": "❓",
-          "label": "Yes (Seeking response)",
+          "label": "Seeking response",
           "points": -5
         },
         {
           "emoji": "🥺",
-          "label": "Yes (Seeking validation)",
+          "label": "Seeking validation",
           "points": -12
         }
       ]
@@ -430,7 +430,7 @@
       "emoji": "👕",
       "title": "The Fabric Test",
       "subtitle": "Are you currently wearing 'outside' clothes or lounge/PJs?",
-      "time": 10,
+      "time": 12.5,
       "bonusTime": 3,
       "options": [
         {
@@ -459,29 +459,29 @@
       "id": "M_16",
       "emoji": "👁️",
       "title": "Screen Time Reality",
-      "subtitle": "Is your current daily average screen time higher than 4 hours?",
-      "time": 14,
+      "subtitle": "How much is your current screen time?",
+      "time": 16,
       "bonusTime": 5,
       "ordered": true,
       "options": [
         {
           "emoji": "📉",
-          "label": "No (Under 2 hours)",
+          "label": "Under 2 hours",
           "points": 150
         },
         {
           "emoji": "⚖️",
-          "label": "No (2 - 4 hours)",
+          "label": "2 - 4 hours",
           "points": 75
         },
         {
           "emoji": "📈",
-          "label": "Yes (4 - 7 hours)",
+          "label": "4 - 7 hours",
           "points": -9
         },
         {
           "emoji": "💀",
-          "label": "Yes (8+ hours)",
+          "label": "8+ hours",
           "points": -28
         }
       ]
@@ -521,27 +521,27 @@
       "emoji": "🍭",
       "title": "Sugar Consumption",
       "subtitle": "Have you eaten processed sugar or candy today?",
-      "time": 9,
+      "time": 12,
       "bonusTime": 2,
       "options": [
         {
           "emoji": "🚫",
-          "label": "No (Clean)",
+          "label": "No",
           "points": 120
         },
         {
           "emoji": "🍎",
-          "label": "Only natural sugars (fruit)",
+          "label": "Only natural sugars or fruits",
           "points": 60
         },
         {
           "emoji": "🍬",
-          "label": "Yes (Minor snack)",
+          "label": "Just a small snack",
           "points": -12
         },
         {
           "emoji": "🍫",
-          "label": "Yes (Heavy binge)",
+          "label": "A big snack or dessert",
           "points": -23
         }
       ]
@@ -557,7 +557,7 @@
       "options": [
         {
           "emoji": "🙅",
-          "label": "No (Unbothered)",
+          "label": "No",
           "points": 120
         },
         {
@@ -582,17 +582,17 @@
       "emoji": "🧘",
       "title": "The Calm Pulse",
       "subtitle": "Check your heart rate/breathing right now.",
-      "time": 11,
+      "time": 12,
       "bonusTime": 4,
       "options": [
         {
           "emoji": "🌊",
-          "label": "Deep and slow (The Ocean)",
+          "label": "Deep and slow",
           "points": 135
         },
         {
           "emoji": "🧊",
-          "label": "Controlled (The Mountain)",
+          "label": "Controlled",
           "points": 90
         },
         {
@@ -602,7 +602,7 @@
         },
         {
           "emoji": "🌪️",
-          "label": "Rapid/Anxious/Shallow",
+          "label": "Rapid or Shallow",
           "points": -18
         }
       ]
@@ -614,7 +614,7 @@
       "emoji": "🌑",
       "title": "The Elevator Mirror",
       "subtitle": "You are alone in an elevator with a mirror. You look at:",
-      "time": 7,
+      "time": 10,
       "bonusTime": 1.5,
       "options": [
         {
@@ -644,7 +644,7 @@
       "emoji": "🌊",
       "title": "The Room's Volume",
       "subtitle": "When you walk into a silent room, you feel like:",
-      "time": 6,
+      "time": 8,
       "bonusTime": 2,
       "options": [
         {
@@ -674,7 +674,7 @@
       "emoji": "🕯️",
       "title": "The Dead Joke",
       "subtitle": "Someone tells a joke that isn't funny. Your face is:",
-      "time": 5,
+      "time": 8,
       "bonusTime": 1.5,
       "options": [
         {
@@ -704,7 +704,7 @@
       "emoji": "🏙️",
       "title": "The City Intersection",
       "subtitle": "Waiting for a walk signal in a crowd, you are:",
-      "time": 6,
+      "time": 8,
       "bonusTime": 2,
       "options": [
         {
@@ -734,7 +734,7 @@
       "emoji": "🦅",
       "title": "The Stranger's Gaze",
       "subtitle": "You lock eyes with a stranger. Your instinct is to:",
-      "time": 6,
+      "time": 8,
       "bonusTime": 1,
       "options": [
         {
@@ -764,7 +764,7 @@
       "emoji": "🥃",
       "title": "The Spilled Drink",
       "subtitle": "Someone knocks over a glass at your table. You:",
-      "time": 6,
+      "time": 8,
       "bonusTime": 2,
       "options": [
         {
@@ -799,17 +799,17 @@
       "options": [
         {
           "emoji": "💎",
-          "label": "Polished Chrome (Precision)",
+          "label": "Polished Chrome",
           "points": 120
         },
         {
           "emoji": "🌋",
-          "label": "Jagged Rock (Friction)",
+          "label": "Jagged Rock",
           "points": 30
         },
         {
           "emoji": "🌫️",
-          "label": "Blurred Fog (Indistinct)",
+          "label": "Blurred Fog",
           "points": -14
         },
         {
@@ -824,7 +824,7 @@
       "emoji": "🛋️",
       "title": "The 15-Minute Void",
       "subtitle": "How does sitting in a dark room with zero tech feel?",
-      "time": 6,
+      "time": 10,
       "bonusTime": 2,
       "options": [
         {
@@ -854,7 +854,7 @@
       "emoji": "💬",
       "title": "The Paragraph Text",
       "subtitle": "Someone sends you a long, angry text. Your reply is:",
-      "time": 6,
+      "time": 10,
       "bonusTime": 1.5,
       "options": [
         {
@@ -884,27 +884,27 @@
       "emoji": "🐅",
       "title": "The Animal Archetype",
       "subtitle": "In a social jungle, you are currently:",
-      "time": 5,
+      "time": 8,
       "bonusTime": 1,
       "options": [
         {
           "emoji": "🦅",
-          "label": "The Eagle (Watching)",
+          "label": "The Eagle",
           "points": 105
         },
         {
           "emoji": "🐍",
-          "label": "The Snake (Moving unseen)",
+          "label": "The Snake",
           "points": 75
         },
         {
           "emoji": "🦌",
-          "label": "The Deer (Alert/Reacting)",
+          "label": "The Deer",
           "points": -23
         },
         {
           "emoji": "🐑",
-          "label": "The Sheep (Following)",
+          "label": "The Sheep",
           "points": -41
         }
       ]
@@ -914,8 +914,8 @@
       "emoji": "🏔️",
       "title": "The Hard 'No'",
       "subtitle": "If a friend asks for a favor you hate, you say:",
-      "time": 5,
-      "bonusTime": 1.5,
+      "time": 8,
+      "bonusTime": 2,
       "options": [
         {
           "emoji": "🚫",
@@ -944,8 +944,8 @@
       "emoji": "🙊",
       "title": "The Secret Vault",
       "subtitle": "The weight of a massive secret feels:",
-      "time": 5,
-      "bonusTime": 1.5,
+      "time": 8,
+      "bonusTime": 2,
       "options": [
         {
           "emoji": "🤐",
@@ -974,7 +974,7 @@
       "emoji": "🎭",
       "title": "The Public Trip",
       "subtitle": "You trip and fall in a crowded mall. You:",
-      "time": 6,
+      "time": 10,
       "bonusTime": 2,
       "options": [
         {
@@ -1004,8 +1004,8 @@
       "emoji": "🕯️",
       "title": "The Power Outage",
       "subtitle": "The lights go out suddenly. You feel:",
-      "time": 5,
-      "bonusTime": 1,
+      "time": 8,
+      "bonusTime": 2,
       "options": [
         {
           "emoji": "🌑",
@@ -1034,7 +1034,7 @@
       "emoji": "🚶",
       "title": "The Pace Maker",
       "subtitle": "Walking with a friend, the walking speed is set by:",
-      "time": 5,
+      "time": 8,
       "bonusTime": 2,
       "options": [
         {
@@ -1064,8 +1064,8 @@
       "emoji": "🐯",
       "title": "The Predator Hunt",
       "subtitle": "Watching a documentary, you identify with:",
-      "time": 5,
-      "bonusTime": 1,
+      "time": 8,
+      "bonusTime": 2,
       "options": [
         {
           "emoji": "🐅",
@@ -1074,7 +1074,7 @@
         },
         {
           "emoji": "🎥",
-          "label": "The Cameraman (Observer)",
+          "label": "The Cameraman",
           "points": 120
         },
         {
@@ -1094,22 +1094,22 @@
       "emoji": "📞",
       "title": "The Unknown Caller",
       "subtitle": "A random number calls. Your immediate vibe is:",
-      "time": 5,
-      "bonusTime": 1,
+      "time": 8,
+      "bonusTime": 2,
       "options": [
         {
           "emoji": "⚔️",
-          "label": "Challenge (Who is this?)",
+          "label": "Challenge",
           "points": 60
         },
         {
           "emoji": "🌫️",
-          "label": "Indifference (VM)",
+          "label": "Indifference",
           "points": 120
         },
         {
           "emoji": "🛡️",
-          "label": "Avoidant (Not today)",
+          "label": "Avoidant",
           "points": -7
         },
         {
@@ -1124,7 +1124,7 @@
       "emoji": "🏅",
       "title": "The Silent Win",
       "subtitle": "A massive accomplishment that nobody knows about is:",
-      "time": 6,
+      "time": 10,
       "bonusTime": 2,
       "options": [
         {
@@ -1154,8 +1154,8 @@
       "emoji": "📖",
       "title": "The Random Page",
       "subtitle": "Opening a new book, you read:",
-      "time": 5,
-      "bonusTime": 1,
+      "time": 8,
+      "bonusTime": 2,
       "options": [
         {
           "emoji": "🏁",
@@ -1184,27 +1184,27 @@
       "emoji": "👑",
       "title": "The Final Thought",
       "subtitle": "If you vanished now, your 'Aura' would be:",
-      "time": 4,
-      "bonusTime": 1,
+      "time": 6,
+      "bonusTime": 2,
       "options": [
         {
           "emoji": "☀️",
-          "label": "A Sun (Presence)",
+          "label": "A Sun",
           "points": 225
         },
         {
           "emoji": "🌑",
-          "label": "A Void (Weight/Mystery)",
+          "label": "A Void",
           "points": 75
         },
         {
           "emoji": "🌫️",
-          "label": "A Cloud (Forgotten)",
+          "label": "A Cloud",
           "points": -23
         },
         {
           "emoji": "🌪️",
-          "label": "A Storm (Regret)",
+          "label": "A Storm",
           "points": -46
         }
       ]
